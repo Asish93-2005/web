@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPI ExpensePulse - Monthly Spendings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body{background:#f8fafc;color:#0f172a}
+    .card{background:white;border-radius:24px;box-shadow:0 8px 30px rgba(15,23,42,.06)}
+    .bar{height:10px;border-radius:999px;background:#eef2ff;overflow:hidden}
+    .bar>span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+    .reveal{animation:fadeUp .55s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Compact, premium View Month control */
+    .month-picker{position:relative;isolation:isolate;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+    .month-picker::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,#6366f1,#8b5cf6,#38bdf8,#6366f1);background-size:260% 260%;animation:monthGradient 7s ease infinite;z-index:-2}
+    .month-picker::after{content:"";position:absolute;width:85px;height:180%;top:-40%;left:-110px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transform:rotate(18deg);animation:monthShine 4.5s ease-in-out infinite;z-index:-1}
+    .month-picker:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(99,102,241,.16)}
+    .month-icon{transition:transform .25s ease}
+    .month-picker:hover .month-icon{transform:rotate(-6deg) scale(1.04)}
+    .month-select-wrap{transition:transform .2s ease}
+    .month-picker:hover .month-select-wrap{transform:translateX(1px)}
+    .month-select{appearance:none;-webkit-appearance:none;transition:background .2s ease,box-shadow .2s ease}
+    .month-select:focus{box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    @keyframes monthGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes monthShine{0%,55%{left:-110px;opacity:0}65%{opacity:.65}85%,100%{left:125%;opacity:0}}
+    @media(max-width:640px){.month-picker{width:100%}.month-picker>div{width:100%}.month-select{min-width:0!important;width:100%}}
+    .month-picker:focus-within{transform:translateY(-1px);box-shadow:0 0 0 3px rgba(99,102,241,.10),0 12px 28px rgba(99,102,241,.14)}
+    .insight-pill{transition:transform .2s ease,box-shadow .2s ease}.insight-pill:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,23,42,.07)}
+    @media(prefers-reduced-motion:reduce){.month-picker,.month-picker::before,.month-picker::after,.month-icon,.insight-pill{animation:none!important;transition:none!important}}
+  
+/* Formal month selector */
+.month-picker{background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#2563eb);padding:1px;border-radius:16px;box-shadow:0 8px 22px rgba(79,70,229,.14);transition:box-shadow .2s ease,transform .2s ease}
+.month-picker:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(79,70,229,.20)}
+.month-picker>div{background:rgba(255,255,255,.98);border-radius:15px}
+.month-select-wrap{border-left:1px solid #e2e8f0;padding-left:10px}
+.month-select{font-family:inherit;letter-spacing:-.01em;background:transparent!important;color:#0f172a!important;min-width:168px!important}
+.month-select option{background:#fff;color:#0f172a;font-weight:600}
+.month-icon{box-shadow:0 4px 10px rgba(79,70,229,.20)}
+@media(max-width:640px){.month-select-wrap{border-left:0;padding-left:0}.month-select{min-width:0!important}}
+
+</style>
+</head>
+<body class="min-h-screen">
+  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="dash.html" class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center shadow-md">
+          <i data-lucide="wallet" class="w-5 h-5 text-white"></i>
+        </div>
+        <div><span class="text-lg font-extrabold">UPI <span class="text-indigo-600">ExpensePulse</span></span><span class="hidden sm:block text-[10px] font-semibold text-slate-400">Monthly Spending History</span></div>
+      </a>
+      <button type="button" onclick="goDashboard()" class="group px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold flex items-center gap-2 transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/20">
+        <i data-lucide="arrow-left" class="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1"></i> Back to Dashboard
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 relative">
+    <section class="mb-7 relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-6 sm:p-8 shadow-sm">
+      <p class="text-sm font-semibold text-indigo-600 mb-1">Spending History</p>
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div><h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Monthly Spendings</h1><p class="text-sm text-slate-500 mt-2">Compare your spending across different months without crowding the main dashboard.</p></div>
+        <label class="month-picker group flex items-center rounded-2xl p-[1px] cursor-pointer shadow-md shadow-indigo-500/10 w-full lg:w-auto">
+          <div class="flex items-center gap-2.5 rounded-[15px] bg-white/95 backdrop-blur-xl px-3 py-2.5 w-full lg:w-auto">
+            <span class="month-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm">
+              <i data-lucide="calendar-days" class="w-4 h-4"></i>
+            </span>
+            <span class="hidden sm:flex flex-col shrink-0 leading-tight">
+              <span class="text-[9px] uppercase tracking-[0.12em] font-extrabold text-indigo-500">History</span>
+              <span class="text-[11px] font-bold text-slate-500">View month</span>
+            </span>
+            <span class="month-select-wrap relative flex items-center min-w-0 flex-1 lg:flex-none">
+              <select id="monthSelect" aria-label="Select month" class="month-select font-extrabold text-[13px] text-slate-800 rounded-lg pl-2 pr-8 py-2 outline-none cursor-pointer min-w-0 w-full lg:w-[175px]"></select>
+              <i data-lucide="chevron-down" class="pointer-events-none absolute right-2.5 w-3.5 h-3.5 text-indigo-500"></i>
+            </span>
+          </div>
+        </label>
+      </div>
+      <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-500">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/80 text-indigo-600 shadow-sm insight-pill"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span id="insightText">Select a month to explore your spending story</span></span>
+        <span id="spendingStatus" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/80 text-slate-500 shadow-sm insight-pill"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span> Ready</span>
+      </div>
+    </section>
+
+    <section class="reveal grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div class="card p-5"><p class="text-xs font-bold text-slate-500">Selected Month</p><p id="selectedMonth" class="text-lg font-extrabold mt-2">—</p></div>
+      <div class="card p-5"><p class="text-xs font-bold text-slate-500">Total Spend</p><p id="monthTotal" class="text-2xl font-extrabold mt-2">₹0</p></div>
+      <div class="card p-5"><p class="text-xs font-bold text-slate-500">Transactions</p><p id="monthCount" class="text-2xl font-extrabold mt-2">0</p></div>
+      <div class="card p-5"><p class="text-xs font-bold text-slate-500">Daily Average</p><p id="monthAverage" class="text-2xl font-extrabold mt-2">₹0</p></div>
+    </section>
+
+    <section class="reveal grid grid-cols-1 lg:grid-cols-5 gap-5 mb-6">
+      <div class="lg:col-span-3 card p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5"><div><h2 class="font-extrabold">Month-by-Month History</h2><p class="text-xs text-slate-400 mt-1">Total spending recorded in each month</p></div><i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-500"></i></div>
+        <div class="h-[320px]"><canvas id="historyChart"></canvas></div>
+      </div>
+      <div class="lg:col-span-2 card p-5 sm:p-6">
+        <div class="mb-5"><h2 class="font-extrabold">Selected Month Breakdown</h2><p id="breakdownSubtitle" class="text-xs text-slate-400 mt-1">By category</p></div>
+        <div class="h-[260px]"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="reveal card p-5 sm:p-6 mb-6">
+      <div class="flex items-center justify-between mb-5"><div><h2 class="font-extrabold">Monthly Comparison</h2><p class="text-xs text-slate-400 mt-1">See how the selected month compares with the previous recorded month.</p></div><i data-lucide="git-compare" class="w-5 h-5 text-purple-500"></i></div>
+      <div id="comparison" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section class="reveal card p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-5"><div><h2 class="font-extrabold">Daily Activity in Selected Month</h2><p class="text-xs text-slate-400 mt-1">Every spending day from the selected month</p></div><i data-lucide="calendar-range" class="w-5 h-5 text-emerald-500"></i></div>
+      <div class="h-[300px]"><canvas id="dailyChart"></canvas></div>
+      <div id="emptyState" class="hidden text-center py-12 text-sm text-slate-400">No spending data is available for this month yet.</div>
+    </section>
+  </main>
+
+<script>
+const DASHBOARD_FILE='dashboard_with_monthly_spendings.html';
+let transactions=JSON.parse(localStorage.getItem('expensePulseTransactions')||'[]');
+let categoryNames=JSON.parse(localStorage.getItem('expensePulseCategories')||'null');
+if(!Array.isArray(categoryNames)||!categoryNames.length) categoryNames=['Food & Dining','Travel & Transport','Others'];
+if(!categoryNames.includes('Others')) categoryNames.push('Others');
+let historyChart=null,categoryChart=null,dailyChart=null;
+const colors=['#6366f1','#f59e0b','#10b981','#a855f7','#0ea5e9','#f43f5e','#14b8a6','#f97316','#64748b'];
+function money(v){return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(v)||0)}
+function dateKey(ts){const s=String(ts||'');let m=s.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);if(m)return `${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;m=s.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return `${y}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`};m=s.match(/(\d{1,2})\s*[-/]?\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-/]?\s*(\d{2,4})/i);if(m){const ms={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};let y=+m[3];if(y<100)y+=2000;return `${y}-${String(ms[m[2].slice(0,3).toLowerCase()]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`};return null}
+function monthLabel(key){const [y,m]=key.split('-');return new Date(+y,+m-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}
+function goDashboard(){
+  const target=new URL(DASHBOARD_FILE,window.location.href).href;
+  if(document.referrer && document.referrer!==window.location.href){
+    window.location.href=document.referrer;
+    return;
+  }
+  if(window.history.length>1){
+    const before=window.location.href;
+    window.history.back();
+    setTimeout(()=>{if(window.location.href===before) window.location.href=target;},350);
+    return;
+  }
+  window.location.href=target;
+}
+function debits(){return transactions.filter(t=>t.type==='Debited').map(t=>({...t,key:dateKey(t.timestamp)})).filter(t=>t.key&&Number(t.amount)>0)}
+function monthTotals(){const out={};debits().forEach(t=>{const k=t.key.slice(0,7);out[k]=(out[k]||0)+Number(t.amount)});return out}
+function allCalendarMonths(){
+  const totals=monthTotals();
+  const years=new Set(Object.keys(totals).map(k=>k.slice(0,4)));
+  if(!years.size) years.add(String(new Date().getFullYear()));
+  const months=[];
+  [...years].sort().forEach(y=>{for(let m=1;m<=12;m++) months.push(`${y}-${String(m).padStart(2,'0')}`)});
+  return months.sort().reverse();
+}
+function populateMonths(){
+  const totals=monthTotals();
+  const allMonths=allCalendarMonths();
+  const spendingMonths=Object.keys(totals).filter(k=>totals[k]>0).sort();
+  const select=document.getElementById('monthSelect');
+  select.innerHTML=allMonths.map(k=>{
+    const hasSpend=Number(totals[k]||0)>0;
+    return `<option value="${k}">${monthLabel(k)}${hasSpend?` — ${money(totals[k])}`:' — No spending'}</option>`;
+  }).join('');
+  const firstSpending=spendingMonths.length?spendingMonths[spendingMonths.length-1]:allMonths[0];
+  if(firstSpending) select.value=firstSpending;
+  select.onchange=renderSelected;
+  renderHistory(spendingMonths,totals);
+  renderSelected();
+}
+function renderHistory(keys,totals){if(historyChart)historyChart.destroy();const ctx=document.getElementById('historyChart');const ordered=[...keys].sort();historyChart=new Chart(ctx,{type:'bar',data:{labels:ordered.length?ordered.map(monthLabel):['No spending recorded'],datasets:[{label:'Monthly Spend',data:ordered.length?ordered.map(k=>totals[k]):[0],backgroundColor:'#6366f1',borderRadius:8,maxBarThickness:60}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')}},x:{grid:{display:false}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>money(c.raw)}}}}})}
+function renderSelected(){const key=document.getElementById('monthSelect').value;if(!key)return;const rows=debits().filter(t=>t.key.startsWith(key));const total=rows.reduce((a,t)=>a+Number(t.amount),0);const days=new Set(rows.map(t=>t.key)).size;document.getElementById('selectedMonth').textContent=monthLabel(key);document.getElementById('monthTotal').textContent=money(total);document.getElementById('monthCount').textContent=rows.length;document.getElementById('monthAverage').textContent=money(days?total/days:0);document.getElementById('breakdownSubtitle').textContent=`${rows.length} debit transaction${rows.length===1?'':'s'} in ${monthLabel(key)}`;renderCategory(rows);renderDaily(rows);renderComparison(key,total);renderMonthInsight(rows,total,days)}
+function renderMonthInsight(rows,total,days){const insight=document.getElementById('insightText'),status=document.getElementById('spendingStatus');if(!rows.length){insight.textContent=`No spending recorded in ${monthLabel(document.getElementById('monthSelect').value)} — a clean month.`;status.innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span> No activity';return}const categoryTotals={};rows.forEach(t=>{const c=t.category||'Others';categoryTotals[c]=(categoryTotals[c]||0)+Number(t.amount)});const top=Object.entries(categoryTotals).sort((a,b)=>b[1]-a[1])[0];const peak=rows.reduce((best,t)=>Number(t.amount)>Number(best.amount)?t:best,rows[0]);insight.textContent=`Top: ${top[0]} • Peak spend: ${money(peak.amount)} • ${days} active day${days===1?'':'s'}`;status.innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active spending'}
+function renderCategory(rows){const totals={};rows.forEach(t=>{const c=categoryNames.includes(t.category)?t.category:'Others';totals[c]=(totals[c]||0)+Number(t.amount)});const labels=Object.keys(totals).filter(k=>totals[k]>0);if(categoryChart)categoryChart.destroy();categoryChart=new Chart(document.getElementById('categoryChart'),{type:'doughnut',data:{labels:labels.length?labels:['No spending'],datasets:[{data:labels.length?labels.map(k=>totals[k]):[1],backgroundColor:labels.length?labels.map((_,i)=>colors[i%colors.length]):['#e2e8f0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:10,weight:'600'}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${money(c.raw)}`}}}}})}
+function renderDaily(rows){const buckets={};rows.forEach(t=>buckets[t.key]=(buckets[t.key]||0)+Number(t.amount));const keys=Object.keys(buckets).sort();if(dailyChart)dailyChart.destroy();document.getElementById('emptyState').classList.toggle('hidden',keys.length>0);dailyChart=new Chart(document.getElementById('dailyChart'),{type:'bar',data:{labels:keys.map(k=>new Date(k+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short'})),datasets:[{label:'Daily Spend',data:keys.map(k=>buckets[k]),backgroundColor:'#10b981',borderRadius:7,maxBarThickness:42}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')}},x:{grid:{display:false}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>money(c.raw)}}}}})}
+function renderComparison(key,total){const keys=Object.keys(monthTotals()).sort();const idx=keys.indexOf(key);const prev=idx>0?keys[idx-1]:null;const prevTotal=prev?monthTotals()[prev]:0;let change='No previous month';if(prevTotal>0)change=`${((total-prevTotal)/prevTotal*100).toFixed(1)}%`;document.getElementById('comparison').innerHTML=`<div class="rounded-2xl bg-slate-50 p-4"><p class="text-[11px] font-bold text-slate-400 uppercase">Selected</p><p class="font-extrabold mt-1">${money(total)}</p><p class="text-xs text-slate-500 mt-1">${monthLabel(key)}</p></div><div class="rounded-2xl bg-indigo-50 p-4"><p class="text-[11px] font-bold text-indigo-500 uppercase">Previous</p><p class="font-extrabold mt-1">${prev?money(prevTotal):'—'}</p><p class="text-xs text-slate-500 mt-1">${prev?monthLabel(prev):'No previous record'}</p></div><div class="rounded-2xl bg-purple-50 p-4"><p class="text-[11px] font-bold text-purple-500 uppercase">Change</p><p class="font-extrabold mt-1">${change}</p><p class="text-xs text-slate-500 mt-1">Compared with previous recorded month</p></div>`}
+lucide.createIcons();populateMonths();
+</script>
+</body>
+</html>

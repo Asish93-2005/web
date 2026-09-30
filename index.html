@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPI ExpensePulse - Effortless Personal Finance</title>
+  
+  <!-- Tailwiand CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Minimal Floating Animation for CTA Buttons and Floating Pills */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-float-slow {
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+
+    @keyframes floatSubtle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+    .animate-float-subtle {
+      animation: floatSubtle 3s ease-in-out infinite;
+    }
+
+    /* Soft Glow Pulse */
+    @keyframes softGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.03); }
+    }
+    .animate-glow-subtle {
+      animation: softGlow 6s ease-in-out infinite;
+    }
+
+    /* Custom smooth scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-500 selection:text-white relative overflow-x-hidden min-h-screen">
+
+  <!-- Soft Ambient Glow Backgrounds -->
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-200/40 via-purple-100/50 to-blue-200/30 blur-[120px] pointer-events-none rounded-full animate-glow-subtle"></div>
+  <div class="absolute top-[650px] right-0 w-[450px] h-[450px] bg-emerald-100/50 blur-[130px] pointer-events-none rounded-full"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 border-b border-slate-200/80 transition-all">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer group">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+          <i data-lucide="wallet" class="w-5 h-5 text-white"></i>
+        </div>
+        <span class="text-xl font-extrabold tracking-tight text-slate-900">
+          UPI <span class="text-indigo-600">ExpensePulse</span>
+        </span>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+        <a href="#how-it-works" class="hover:text-indigo-600 transition-colors duration-200">How It Works</a>
+        <a href="#demo" class="hover:text-indigo-600 transition-colors duration-200">Live Preview</a>
+        <a href="#privacy" class="hover:text-indigo-600 transition-colors duration-200">100% Private</a>
+      </div>
+
+      <!-- Action Button -->
+      <button onclick="openModal()" class="relative group px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-600/35 transition-all duration-300 shadow-lg shadow-indigo-600/20 active:scale-95 flex items-center gap-2 hover:-translate-y-0.5">
+        <span>Get Started</span>
+        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"></i>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative z-10 max-w-5xl mx-auto pt-16 pb-16 px-6 text-center flex flex-col items-center">
+    
+    <!-- Track Badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 backdrop-blur-md text-indigo-700 text-xs font-bold mb-8 shadow-sm animate-float-subtle">
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600"></i> Smart Micro-Expense Management for Everyone
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15] max-w-4xl mb-6">
+      Track Every UPI Spend <br class="hidden sm:inline" />
+      <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">
+        Know Where Your Money Goes
+      </span>
+    </h1>
+
+    <p class="text-base sm:text-lg text-slate-600 max-w-2xl mb-10 leading-relaxed font-normal">
+      Turns your BANK SMS into organized expenses and understand your spendings in seconds.
+    </p>
+
+    <!-- Hero Actions -->
+    <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+      <button onclick="openModal()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-bold text-white shadow-xl shadow-indigo-600/25 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95 hover:-translate-y-1">
+        Try Dashboard Free
+        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"></i>
+      </button>
+      
+      <div class="flex items-center gap-2 text-xs font-semibold text-slate-700 px-4 py-3.5 bg-white rounded-2xl border border-slate-200/80 shadow-sm transition-all hover:border-slate-300">
+        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+        <span>100% Private & Browser Based</span>
+      </div>
+    </div>
+
+
+    <!-- BEAUTIFUL VISUAL APP PREVIEW WITH MINIMAL FLOATING ANIMATIONS -->
+    <div id="demo" class="mt-16 w-full max-w-4xl p-2 sm:p-4 rounded-3xl bg-white/90 border border-slate-200/90 shadow-2xl backdrop-blur-xl relative">
+      
+      <!-- Floating Notification Pill -->
+      <div class="absolute -top-6 left-1/2 -translate-x-1/2 z-20 w-[90%] sm:w-auto px-4 py-2.5 rounded-2xl bg-slate-900 text-white shadow-xl flex items-center gap-3 animate-float-slow border border-slate-700">
+        <div class="relative flex h-3 w-3 shrink-0">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </div>
+        <div class="text-left text-xs">
+          <p class="font-bold text-slate-100">SMS Automatically Parsed!</p>
+          <p class="text-slate-400">Added ₹240 to <span class="text-amber-300 font-semibold">Food & Dining</span></p>
+        </div>
+      </div>
+
+      <!-- App Mockup Container -->
+      <div class="bg-slate-50/70 rounded-[22px] p-4 sm:p-6 text-left border border-slate-200">
+        
+        <!-- App Top Bar & Tabs -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-6">
+          
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Monthly Expense Summary</h3>
+            <p class="text-xs text-slate-500">October 2026 Overview</p>
+          </div>
+
+          <!-- Interactive Tab Buttons -->
+          <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/60 text-xs font-bold text-slate-600">
+            <button onclick="switchTab('transactions')" id="tab-transactions" class="px-3 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition-all duration-200">
+              Recent Spends
+            </button>
+            <button onclick="switchTab('categories')" id="tab-categories" class="px-3 py-1.5 rounded-lg hover:text-slate-900 transition-all duration-200">
+              Category Breakdown
+            </button>
+            <button onclick="switchTab('budget')" id="tab-budget" class="px-3 py-1.5 rounded-lg hover:text-slate-900 transition-all duration-200">
+              Monthly Budget
+            </button>
+          </div>
+
+        </div>
+
+        <!-- TAB CONTENT 1: RECENT SPENDS -->
+        <div id="view-transactions" class="space-y-3">
+          
+          <!-- Item 1 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-indigo-200 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
+                <i data-lucide="utensils" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-900">Swiggy Order</p>
+                <span class="inline-block text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 mt-0.5">
+                  Food & Dining
+                </span>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-extrabold text-slate-900">-₹240.00</p>
+              <p class="text-[11px] text-slate-400">Today, 2:15 PM</p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-indigo-200 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-200">
+                <i data-lucide="car" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-900">Uber Auto Ride</p>
+                <span class="inline-block text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 mt-0.5">
+                  Travel & Commute
+                </span>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-extrabold text-slate-900">-₹120.00</p>
+              <p class="text-[11px] text-slate-400">Yesterday</p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-indigo-200 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+                <i data-lucide="smartphone" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-900">Mobile Recharge (Jio)</p>
+                <span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 mt-0.5">
+                  Bills & Utilities
+                </span>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-extrabold text-slate-900">-₹299.00</p>
+              <p class="text-[11px] text-slate-400">Oct 12</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB CONTENT 2: CATEGORY BREAKDOWN -->
+        <div id="view-categories" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:-translate-y-0.5 transition-all duration-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-500">Food & Dining</span>
+              <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="utensils" class="w-4 h-4"></i></span>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900">₹2,450</p>
+            <p class="text-[11px] text-slate-400 mt-1">45% of total spend</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:-translate-y-0.5 transition-all duration-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-500">Travel</span>
+              <span class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600"><i data-lucide="car" class="w-4 h-4"></i></span>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900">₹1,120</p>
+            <p class="text-[11px] text-slate-400 mt-1">22% of total spend</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:-translate-y-0.5 transition-all duration-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-500">Bills & Utilities</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="zap" class="w-4 h-4"></i></span>
+            </div>
+            <p class="text-2xl font-extrabold text-slate-900">₹830</p>
+            <p class="text-[11px] text-slate-400 mt-1">16% of total spend</p>
+          </div>
+
+        </div>
+
+        <!-- TAB CONTENT 3: MONTHLY BUDGET -->
+        <div id="view-budget" class="hidden space-y-4">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <p class="text-xs font-bold text-slate-500">Monthly Budget Goal</p>
+                <p class="text-xl font-extrabold text-slate-900">₹4,400 <span class="text-xs font-normal text-slate-400">/ ₹5,000 limit</span></p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold flex items-center gap-1 animate-pulse">
+                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> 88% Reached
+              </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500 rounded-full transition-all duration-500" style="width: 88%;"></div>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">You have ₹600 remaining for this month.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="relative z-10 max-w-7xl mx-auto py-20 px-6 border-t border-slate-200/80">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">How ExpensePulse Works</h2>
+      <p class="text-slate-600 max-w-xl mx-auto text-sm sm:text-base">Simple, fast, and completely hassle-free setup in three steps.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Step 1 -->
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300">
+        <div class="h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mb-6 text-indigo-600 font-extrabold text-lg">
+          1
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Paste or Sync SMS</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">
+          Copy and paste your transactional SMS strings from GPay, PhonePe, Paytm, or bank alerts.
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 hover:border-purple-300 hover:-translate-y-1 transition-all duration-300">
+        <div class="h-12 w-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center mb-6 text-purple-600 font-extrabold text-lg">
+          2
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Instant Categorization</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">
+          Our smart engine automatically organizes your payments into Food, Travel, Bills, and Shopping.
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 hover:border-emerald-300 hover:-translate-y-1 transition-all duration-300">
+        <div class="h-12 w-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-6 text-emerald-600 font-extrabold text-lg">
+          3
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Enjoy Clean Analytics</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">
+          View interactive donut charts, daily spending graphs, and get smart warnings before overspending.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Privacy Banner -->
+  <section id="privacy" class="relative z-10 max-w-5xl mx-auto mb-20 px-6">
+    <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+      <div class="flex items-start gap-5">
+        <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 shrink-0">
+          <i data-lucide="lock" class="w-8 h-8"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-2 text-white">Your Financial Data Stays 100% Private</h3>
+          <p class="text-sm text-slate-300 leading-relaxed max-w-lg">
+            Everything runs inside your browser memory. We never upload or store your personal transaction data on external cloud servers.
+          </p>
+        </div>
+      </div>
+      <button onclick="openModal()" class="shrink-0 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm transition-all duration-200 shadow-md hover:-translate-y-0.5 active:scale-95">
+        Try Dashboard Now
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-slate-200/80 py-8 px-6 text-center text-xs font-medium text-slate-500">
+    <p>© 2026 UPI ExpensePulse • Domain 6 Fintech Track Project</p>
+  </footer>
+
+  <!-- NAME AUTHENTICATION MODAL -->
+  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300">
+    <div class="relative w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-2xl transform transition-all">
+
+      <!-- Close Button -->
+      <button
+        onclick="closeModal()"
+        class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Name Form -->
+      <div class="space-y-5">
+        <div class="text-left">
+          <div class="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mb-4 text-indigo-600">
+            <i data-lucide="user" class="w-5 h-5"></i>
+          </div>
+
+          <h3 class="text-xl font-bold text-slate-900">
+            Welcome to ExpensePulse
+          </h3>
+
+          <p class="text-xs text-slate-500 mt-1">
+            Enter your name to personalize your expense dashboard.
+          </p>
+        </div>
+
+        <!-- Name Input -->
+        <div class="space-y-2 text-left">
+          <label class="text-xs font-bold text-slate-700">
+            Your Name
+          </label>
+
+          <input
+            id="nameInput"
+            type="text"
+            placeholder="Enter your name"
+            autocomplete="name"
+            oninput="validateName()"
+            onkeydown="handleNameKeydown(event)"
+            class="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 text-sm font-semibold text-slate-900 rounded-xl px-4 py-3 focus:outline-none transition-colors"
+          />
+        </div>
+
+        <!-- Continue Button -->
+        <button
+          id="continueBtn"
+          disabled
+          onclick="completeAuth()"
+          class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm text-white transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 active:scale-95"
+        >
+          Continue to Dashboard
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    lucide.createIcons();
+
+    // Tab Switching Logic
+    function switchTab(tabName) {
+      const tabs = ['transactions', 'categories', 'budget'];
+      
+      tabs.forEach(t => {
+        const viewEl = document.getElementById(`view-${t}`);
+        const tabBtn = document.getElementById(`tab-${t}`);
+        
+        if (t === tabName) {
+          viewEl.classList.remove('hidden');
+          tabBtn.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+        } else {
+          viewEl.classList.add('hidden');
+          tabBtn.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+        }
+      });
+    }
+
+    // Modal Control
+    function openModal() {
+      const modal = document.getElementById('authModal');
+      const nameInput = document.getElementById('nameInput');
+
+      modal.classList.remove('hidden');
+
+      // Focus on the name field
+      setTimeout(() => {
+        nameInput.focus();
+      }, 100);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('authModal');
+      const nameInput = document.getElementById('nameInput');
+      const continueBtn = document.getElementById('continueBtn');
+
+      modal.classList.add('hidden');
+
+      // Reset form
+      nameInput.value = '';
+      continueBtn.disabled = true;
+    }
+
+    // Validate Name
+    function validateName() {
+      const input = document.getElementById('nameInput');
+      const btn = document.getElementById('continueBtn');
+
+      // Allow letters, spaces, dots and apostrophes
+      input.value = input.value.replace(/[^a-zA-Z\s.'-]/g, '');
+
+      // Remove unnecessary spaces
+      input.value = input.value.replace(/\s+/g, ' ');
+
+      // Enable button when a valid name is entered
+      btn.disabled = input.value.trim().length < 2;
+    }
+
+    // Allow Enter key to continue
+    function handleNameKeydown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+
+        const btn = document.getElementById('continueBtn');
+
+        if (!btn.disabled) {
+          completeAuth();
+        }
+      }
+    }
+
+    // Save Name and Open Dashboard
+    function completeAuth() {
+      const nameInput = document.getElementById('nameInput');
+      const name = nameInput.value.trim();
+
+      if (name.length < 2) {
+        nameInput.focus();
+        return;
+      }
+
+      // Store the user's name so the dashboard can use it
+      localStorage.setItem('expensePulseUserName', name);
+
+      // Redirect to dashboard
+      window.location.href = 'dash.html';
+    }
+
+  </script>
+
+</body>
+</html>

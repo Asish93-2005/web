@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPI ExpensePulse - Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <style>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes softPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .72; }
+    }
+
+    .animate-fade-up {
+      animation: fadeUp .55s ease-out both;
+    }
+
+    .animate-soft-pulse {
+      animation: softPulse 2.5s ease-in-out infinite;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .chart-wrap {
+      position: relative;
+      height: 300px;
+      min-height: 260px;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .chart-wrap { height: 250px; }
+    }
+    /* MODERN MOTION SYSTEM */
+    :root { --motion-ease: cubic-bezier(.22,1,.36,1); }
+    html { scroll-behavior:smooth; }
+    .motion-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+    .motion-orb{position:absolute;width:280px;height:280px;border-radius:50%;filter:blur(55px);opacity:.22;animation:orbFloat 14s ease-in-out infinite}
+    .motion-orb.one{top:8%;left:-90px;background:#6366f1}.motion-orb.two{top:38%;right:-100px;background:#a855f7;animation-delay:-5s}.motion-orb.three{bottom:-100px;left:35%;background:#10b981;animation-delay:-9s}
+    @keyframes orbFloat{0%,100%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(55px,-35px,0) scale(1.12)}70%{transform:translate3d(-35px,45px,0) scale(.92)}}
+    .motion-grid{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(99,102,241,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.13) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 75%);animation:gridDrift 18s linear infinite}
+    @keyframes gridDrift{to{background-position:44px 44px}}
+    .glass-motion{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .motion-card{transform-style:preserve-3d;transition:transform .55s var(--motion-ease),box-shadow .55s var(--motion-ease),border-color .35s ease;position:relative;overflow:hidden}
+    .motion-card::before{content:"";position:absolute;inset:-2px;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.55) 48%,transparent 70%);transform:translateX(-120%);transition:transform .9s var(--motion-ease);pointer-events:none}
+    .motion-card:hover::before{transform:translateX(120%)}
+    .motion-card:hover{transform:translateY(-7px) scale(1.012);box-shadow:0 24px 55px rgba(15,23,42,.12)}
+    .gradient-text{background:linear-gradient(90deg,#4f46e5,#9333ea,#0891b2,#4f46e5);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradientFlow 6s linear infinite}
+    @keyframes gradientFlow{to{background-position:300% center}}
+    .neon-border{position:relative}.neon-border::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(120deg,transparent,#818cf8,transparent,#34d399,transparent);background-size:250% 250%;animation:borderFlow 5s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.55}
+    @keyframes borderFlow{to{background-position:250% 0}}
+    .btn-modern{position:relative;overflow:hidden;transform:translateZ(0);transition:transform .3s var(--motion-ease),box-shadow .3s ease}.btn-modern:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(79,70,229,.22)}.btn-modern:active{transform:translateY(0) scale(.97)}
+    .btn-modern::after{content:"";position:absolute;top:-80%;left:-40%;width:30%;height:260%;background:rgba(255,255,255,.32);transform:rotate(22deg) translateX(-250%);transition:transform .75s var(--motion-ease)}.btn-modern:hover::after{transform:rotate(22deg) translateX(700%)}
+    .reveal-motion{opacity:0;transform:translateY(26px) scale(.98);transition:opacity .75s ease,transform .75s var(--motion-ease)}.reveal-motion.is-visible{opacity:1;transform:none}
+    .stagger-1{transition-delay:.05s}.stagger-2{transition-delay:.1s}.stagger-3{transition-delay:.15s}.stagger-4{transition-delay:.2s}
+    .pulse-dot{animation:dotPulse 1.8s ease-in-out infinite;box-shadow:0 0 0 0 rgba(16,185,129,.4)}@keyframes dotPulse{50%{box-shadow:0 0 0 8px rgba(16,185,129,0);transform:scale(1.15)}}
+    .scan-line{position:relative;overflow:hidden}.scan-line::after{content:"";position:absolute;left:0;right:0;height:2px;top:-3px;background:linear-gradient(90deg,transparent,#818cf8,transparent);box-shadow:0 0 14px #818cf8;animation:scan 3.2s ease-in-out infinite;pointer-events:none}@keyframes scan{0%{top:-3px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:100%;opacity:0}}
+    .float-gentle{animation:gentleFloat 4.5s ease-in-out infinite}@keyframes gentleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    .table-row-motion{transition:background .25s ease,transform .25s var(--motion-ease)}.table-row-motion:hover{transform:translateX(4px);background:rgba(238,242,255,.7)}
+    .progress-glow{position:relative}.progress-glow::after{content:"";position:absolute;inset:0;border-radius:inherit;background:inherit;filter:blur(7px);opacity:.35;z-index:-1}
+    .page-loader{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:#f8fafc;transition:opacity .7s ease,visibility .7s ease}.page-loader.done{opacity:0;visibility:hidden;pointer-events:none}.loader-ring{width:58px;height:58px;border:3px solid #e2e8f0;border-top-color:#6366f1;border-right-color:#a855f7;border-radius:50%;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+  
+    /* Teach your categories: keep this panel completely still. */
+    .teach-category-section,
+    .teach-category-section:hover,
+    .teach-category-section * {
+      transform: none !important;
+      animation: none !important;
+    }
+    .teach-category-section {
+      transition: none !important;
+    }
+</style>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-900 font-sans min-h-screen">
+  <div id="pageLoader" class="page-loader"><div class="text-center"><div class="loader-ring mx-auto"></div><p class="mt-4 text-xs font-extrabold tracking-[.25em] text-slate-500">EXPENSEPULSE</p></div></div><div class="motion-bg"><div class="motion-grid"></div><div class="motion-orb one"></div><div class="motion-orb two"></div><div class="motion-orb three"></div></div>
+
+  <!-- Ambient background -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-indigo-200/30 blur-[120px] rounded-full"></div>
+    <div class="absolute top-[500px] -right-40 w-[450px] h-[450px] bg-emerald-100/40 blur-[120px] rounded-full"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-40 glass-motion bg-white/85 backdrop-blur-xl border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition">
+          <i data-lucide="wallet" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="text-lg font-extrabold tracking-tight">
+            UPI <span class="text-indigo-600">ExpensePulse</span>
+          </span>
+          <span class="hidden sm:block text-[10px] font-semibold text-slate-400 -mt-0.5">
+            Personal Expense Dashboard
+          </span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-soft-pulse"></span>
+          100% Browser Based
+        </span>
+
+        <button onclick="clearAllData()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-500 transition" title="Clear local data">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-7">
+
+    <!-- Header -->
+    <section class="animate-fade-up mb-7">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+        <div>
+          <p class="text-sm font-semibold text-indigo-600 mb-1">Financial Overview</p>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            Welcome, <span id="userName">User</span> 👋
+          </h1>
+          <p class="text-sm text-slate-500 mt-2">
+            Paste your bank / UPI SMS messages and let ExpensePulse organize your spending.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button onclick="document.getElementById('smsInput').focus()"
+            class="btn-modern px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition active:scale-95 flex items-center gap-2">
+            <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+            Add SMS
+          </button>
+
+          <button onclick="window.location.href='monthly-spendings.html'"
+            class="btn-modern px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold shadow-lg shadow-purple-600/20 transition active:scale-95 flex items-center gap-2">
+            <i data-lucide="calendar-days" class="w-4 h-4"></i>
+            Monthly Spendings
+          </button>
+
+          <div class="relative z-[100]">
+            <button onclick="toggleExportMenu()"
+              class="btn-modern px-4 py-2.5 rounded-xl bg-white hover:border-slate-300 text-slate-700 text-sm font-bold shadow-sm transition flex items-center gap-2">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              Export
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+            </button>
+
+            <div id="exportMenu" class="hidden fixed w-52 z-[999999] bg-white rounded-xl shadow-2xl overflow-hidden">
+              <button onclick="exportCSV()" class="w-full text-left px-4 py-3 text-sm font-semibold hover:bg-slate-50 flex items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
+                Export CSV
+              </button>
+              <button onclick="exportExcel()" class="w-full text-left px-4 py-3 text-sm font-semibold hover:bg-slate-50 flex items-center gap-2">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+                Export Excel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI cards -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+
+      <div class="animate-fade-up motion-card bg-white rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500">Total Spend</span>
+          <span class="h-9 w-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <p id="totalSpend" class="text-2xl sm:text-3xl font-extrabold">₹0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Debited transactions</p>
+      </div>
+
+      <div class="animate-fade-up motion-card bg-white rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500">Transactions</span>
+          <span class="h-9 w-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <i data-lucide="receipt" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <p id="transactionCount" class="text-2xl sm:text-3xl font-extrabold">0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Parsed SMS records</p>
+      </div>
+
+      <div class="animate-fade-up motion-card bg-white rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500">Avg. Spend</span>
+          <span class="h-9 w-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <p id="averageSpend" class="text-2xl sm:text-3xl font-extrabold">₹0</p>
+        <p class="text-[11px] text-slate-400 mt-1">Per debit transaction</p>
+      </div>
+
+      <div class="animate-fade-up motion-card bg-white rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500">Budget Left</span>
+          <span id="budgetIcon" class="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="piggy-bank" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <p id="budgetLeft" class="text-2xl sm:text-3xl font-extrabold">₹5,000</p>
+        <p id="budgetStatus" class="text-[11px] text-slate-400 mt-1">Remaining from your budget</p>
+      </div>
+
+    </section>
+
+    <!-- Budget warning -->
+    <section id="budgetWarning" class="hidden mb-6 p-4 rounded-2xl border flex items-start gap-3">
+      <div id="budgetWarningIcon" class="h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <p id="budgetWarningTitle" class="font-extrabold text-sm"></p>
+        <p id="budgetWarningText" class="text-xs mt-1"></p>
+      </div>
+    </section>
+
+    <!-- SMS Parser -->
+    <section class="mb-6 motion-card bg-white rounded-3xl shadow-sm overflow-hidden animate-fade-up">
+      <div class="p-5 sm:p-6 border-b border-slate-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i data-lucide="scan-text" class="w-4 h-4"></i>
+              </span>
+              <h2 class="text-lg font-extrabold">SMS Batch Parser</h2>
+            </div>
+            <p class="text-xs text-slate-500">
+              Paste multiple transactional SMS messages from SBI, HDFC, ICICI, PNB, Paytm Bank, GPay, PhonePe, or other UPI alerts.
+            </p>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+            SMS SECTION
+          </span>
+        </div>
+      </div>
+
+      <div class="p-5 sm:p-6">
+        <div class="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button type="button" onclick="focusSmsInput()" class="sms-source-btn group rounded-2xl bg-indigo-50 px-3 py-2.5 text-left hover:bg-indigo-100 transition">
+            <span class="flex items-center gap-2 text-[11px] font-extrabold text-indigo-700"><i data-lucide="clipboard-paste" class="w-3.5 h-3.5"></i> Paste SMS</span>
+            <span class="text-[10px] text-slate-400">Single or batch</span>
+          </button>
+          <button type="button" onclick="document.getElementById('smsTxtFile').click()" class="sms-source-btn group rounded-2xl bg-slate-50 px-3 py-2.5 text-left hover:bg-indigo-50 transition">
+            <span class="flex items-center gap-2 text-[11px] font-extrabold text-slate-700"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> TXT File</span>
+            <span class="text-[10px] text-slate-400">Bulk SMS text</span>
+          </button>
+          <button type="button" onclick="document.getElementById('smsCsvFile').click()" class="sms-source-btn group rounded-2xl bg-slate-50 px-3 py-2.5 text-left hover:bg-indigo-50 transition">
+            <span class="flex items-center gap-2 text-[11px] font-extrabold text-slate-700"><i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> CSV File</span>
+            <span class="text-[10px] text-slate-400">SMS / message column</span>
+          </button>
+          <div class="rounded-2xl bg-emerald-50 px-3 py-2.5 text-left">
+            <span class="flex items-center gap-2 text-[11px] font-extrabold text-emerald-700"><i data-lucide="layers-3" class="w-3.5 h-3.5"></i> Multi-format</span>
+            <span class="text-[10px] text-slate-500">Bank + UPI styles</span>
+          </div>
+        </div>
+        <input id="smsTxtFile" type="file" accept=".txt,text/plain" class="hidden" onchange="handleSmsFile(this,'txt')">
+        <input id="smsCsvFile" type="file" accept=".csv,text/csv" class="hidden" onchange="handleSmsFile(this,'csv')">
+
+        <div id="fileImportInfo" class="hidden mb-3 rounded-2xl bg-indigo-50/70 px-3.5 py-2.5 text-xs text-indigo-700 flex items-center justify-between gap-3">
+          <span id="fileImportText"></span>
+          <button type="button" onclick="clearImportedSms()" class="font-bold hover:text-indigo-900">Clear</button>
+        </div>
+
+        <textarea
+          id="smsInput"
+          rows="7"
+          placeholder="Paste your SMS messages here, one or more at a time...
+
+Example:
+Rs.240 debited from A/c XX1234 to VPA swiggy@upi on 30-09-2026 at 14:15. UPI Ref 1234567890.
+
+Rs 120 debited via UPI to Uber@upi on 29-09-2026 at 18:30.
+
+INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
+          class="w-full resize-y min-h-[170px] bg-slate-50 rounded-2xl p-4 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+        ></textarea>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
+          <p id="parseStatus" class="text-xs text-slate-400">
+            Your SMS data is processed in this browser and is not uploaded by this page.
+          </p>
+
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button onclick="loadDemoSMS()"
+              class="btn-modern flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition">
+              Load Demo
+            </button>
+            <button onclick="parseSMS()"
+              class="btn-modern flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition active:scale-95 flex items-center justify-center gap-2">
+              <i data-lucide="wand-sparkles" class="w-4 h-4"></i>
+              Parse SMS
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-6">
+
+      <div class="lg:col-span-2 motion-card bg-white rounded-3xl shadow-sm p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h2 class="font-extrabold">Category Breakdown</h2>
+            <p class="text-xs text-slate-400 mt-1">Where your money is going across every spending sector</p>
+          </div>
+          <span class="p-2 rounded-xl bg-indigo-50 text-indigo-600">
+            <i data-lucide="pie-chart" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3 motion-card bg-white rounded-3xl shadow-sm p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="font-extrabold">Spending Trends</h2>
+            <p id="spendingTrendSubtitle" class="text-xs text-slate-400 mt-1">Daily debit amount by transaction date</p>
+          </div>
+          <div class="flex items-center gap-1 p-1 rounded-xl bg-slate-100">
+            <button type="button" onclick="setSpendingPeriod('daily')" id="spendTabDaily" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-white text-indigo-600 shadow-sm transition">Daily</button>
+            <button type="button" onclick="setSpendingPeriod('weekly')" id="spendTabWeekly" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold text-slate-500 transition">Weekly</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="rounded-xl bg-indigo-50/70 p-3">
+            <p class="text-[10px] font-bold text-indigo-500 uppercase">Today</p>
+            <p id="spendToday" class="text-sm font-extrabold text-slate-900 mt-1">₹0</p>
+          </div>
+          <div class="rounded-xl bg-purple-50/70 p-3">
+            <p class="text-[10px] font-bold text-purple-500 uppercase">This Week</p>
+            <p id="spendWeek" class="text-sm font-extrabold text-slate-900 mt-1">₹0</p>
+          </div>
+          <div class="rounded-xl bg-emerald-50/70 p-3">
+            <p class="text-[10px] font-bold text-emerald-500 uppercase">This Month</p>
+            <p id="spendMonth" class="text-sm font-extrabold text-slate-900 mt-1">₹0</p>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Budget + Category summary -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+
+      <div class="lg:col-span-1 motion-card bg-white rounded-3xl shadow-sm p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h2 class="font-extrabold">Monthly Budget</h2>
+            <p id="budgetLimitLabel" class="text-xs text-slate-400 mt-1">Budget limit: ₹5,000</p>
+          </div>
+          <span id="budgetBadge" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700">
+            0% Used
+          </span>
+        </div>
+
+        <!-- Editable budget -->
+        <div class="mb-4">
+          <label for="budgetInput" class="block text-xs font-bold text-slate-600 mb-2">
+            Set your monthly budget
+          </label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">₹</span>
+              <input
+                id="budgetInput"
+                type="number"
+                min="1"
+                step="1"
+                value="5000"
+                class="w-full rounded-xl bg-slate-50 pl-8 pr-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              />
+            </div>
+            <button
+              type="button"
+              onclick="saveBudgetSettings()"
+              class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition active:scale-95"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- Budget note -->
+        <div class="mb-5">
+          <label for="budgetNote" class="block text-xs font-bold text-slate-600 mb-2">
+            Budget note
+          </label>
+          <textarea
+            id="budgetNote"
+            rows="2"
+            maxlength="120"
+            placeholder="Example: Keep ₹1,500 for food and travel."
+            class="w-full resize-none rounded-xl bg-slate-50 px-3 py-2.5 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+          ></textarea>
+          <div class="flex justify-between mt-1">
+            <span id="budgetSaveStatus" class="text-[10px] text-slate-400"></span>
+            <span id="budgetNoteCount" class="text-[10px] text-slate-400">0/120</span>
+          </div>
+        </div>
+
+        <!-- Remaining money -->
+        <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 mb-4">
+          <p class="text-[10px] uppercase tracking-wide font-extrabold text-indigo-600">
+            Money Remaining
+          </p>
+          <p id="budgetRemainingLarge" class="text-3xl font-extrabold text-slate-900 mt-1">₹5,000</p>
+          <p id="budgetRemainingMessage" class="text-xs text-indigo-700 mt-1">
+            You can spend up to ₹5,000 more this month.
+          </p>
+        </div>
+
+        <div class="flex items-end justify-between mb-2">
+          <div>
+            <p id="budgetSpent" class="text-2xl font-extrabold">₹0</p>
+            <p class="text-xs text-slate-400">spent</p>
+          </div>
+          <p id="budgetLimitSmall" class="text-xs font-semibold text-slate-500">₹5,000 limit</p>
+        </div>
+
+        <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div id="budgetProgress" class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-700" style="width:0%"></div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-xl bg-slate-50">
+            <p class="text-[10px] text-slate-400 font-bold">80% Alert</p>
+            <p id="budgetAlertAmount" class="text-sm font-extrabold">₹4,000</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50">
+            <p class="text-[10px] text-slate-400 font-bold">100% Limit</p>
+            <p id="budgetLimitCard" class="text-sm font-extrabold">₹5,000</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 teach-category-section bg-white rounded-3xl shadow-sm p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h2 class="font-extrabold">Spending by Category</h2>
+            <p class="text-xs text-slate-400 mt-1">Automatically categorized spending across all supported sectors</p>
+          </div>
+          <i data-lucide="tags" class="w-5 h-5 text-slate-400"></i>
+        </div>
+
+        <div id="categoryList" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+
+        <div class="mt-4 flex flex-col sm:flex-row gap-2">
+          <input id="newCategoryInput" type="text" maxlength="30" placeholder="Add your own category…" class="flex-1 bg-slate-50 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+          <button type="button" onclick="addCategory()" class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">+ Add Category</button>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2">Start with 3 categories. Add or remove categories anytime; your choices are saved in this browser.</p>
+        <div class="mt-4 p-4 rounded-2xl bg-slate-50">
+          <p class="text-xs font-extrabold text-slate-700 mb-1">Teach your categories</p>
+          <p class="text-[11px] text-slate-400 mb-3">Add keywords so matching SMS transactions automatically go into your custom category.</p>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <select id="keywordCategorySelect" class="sm:w-1/3 bg-white rounded-xl px-3 py-2.5 text-sm font-semibold focus:outline-none"></select>
+            <input id="categoryKeywordInput" type="text" maxlength="150"
+              placeholder="Keywords: netflix, spotify, prime"
+              class="flex-1 bg-white rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none">
+            <button type="button" onclick="addCategoryKeywords()"
+              class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Save Rules</button>
+          </div>
+          <p id="categoryKeywordStatus" class="text-[11px] text-emerald-600 mt-2"></p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Transactions -->
+    <section class="motion-card bg-white rounded-3xl shadow-sm overflow-hidden mb-10">
+
+      <div class="p-5 sm:p-6 border-b border-slate-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-extrabold">Parsed Transactions</h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Amount, transaction type, merchant/VPA entity, timestamp and category extracted from SMS.
+            </p>
+          </div>
+
+          <span id="tableCount" class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">
+            0 records
+          </span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[850px] text-left">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr class="text-[11px] uppercase tracking-wide text-slate-500">
+              <th class="px-5 py-3 font-extrabold">Date & Time</th>
+              <th class="px-5 py-3 font-extrabold">Bank / Merchant</th>
+              <th class="px-5 py-3 font-extrabold">Type</th>
+              <th class="px-5 py-3 font-extrabold">Category</th>
+              <th class="px-5 py-3 font-extrabold">Reference</th>
+              <th class="px-5 py-3 font-extrabold text-right">Amount</th>
+              <th class="px-5 py-3 font-extrabold text-right">Budget Remaining</th>
+            </tr>
+          </thead>
+          <tbody id="transactionTable">
+            <tr>
+              <td colspan="7" class="px-5 py-14 text-center">
+                <div class="mx-auto h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+                  <i data-lucide="inbox" class="w-6 h-6"></i>
+                </div>
+                <p class="font-bold text-slate-700">No transactions yet</p>
+                <p class="text-xs text-slate-400 mt-1">Paste SMS above and click “Parse SMS”.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- Privacy note -->
+    <section class="mb-8 p-5 sm:p-6 rounded-3xl bg-slate-900 text-white">
+      <div class="flex items-start gap-4">
+        <div class="h-10 w-10 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-400/20 flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold">Your financial SMS stays in this browser</h3>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            This prototype processes the pasted messages locally with JavaScript. It does not require real-time SMS access or server-side SMS storage.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="relative z-10 border-t border-slate-200 bg-white py-6 text-center">
+    <p class="text-xs font-medium text-slate-400">
+      © 2026 UPI ExpensePulse • Fintech & Payments
+    </p>
+  </footer>
+
+<script>
+  // ---------------------------------------------------------
+  // USER
+  // ---------------------------------------------------------
+  const savedName = localStorage.getItem("expensePulseUserName");
+  document.getElementById("userName").textContent = savedName || "User";
+
+  // ---------------------------------------------------------
+  // DATA
+  // ---------------------------------------------------------
+  const DEFAULT_BUDGET_LIMIT = 5000;
+  let budgetLimit = Number(localStorage.getItem("expensePulseBudget") || DEFAULT_BUDGET_LIMIT);
+  if (!Number.isFinite(budgetLimit) || budgetLimit <= 0) {
+    budgetLimit = DEFAULT_BUDGET_LIMIT;
+  }
+
+  let budgetNote = localStorage.getItem("expensePulseBudgetNote") || "";
+
+  let transactions = JSON.parse(localStorage.getItem("expensePulseTransactions") || "[]");
+  let categoryChart = null;
+  let dailyChart = null;
+  let spendingPeriod = "daily";
+
+  function initializeBudgetSettings() {
+    const input = document.getElementById("budgetInput");
+    const note = document.getElementById("budgetNote");
+    const count = document.getElementById("budgetNoteCount");
+
+    input.value = budgetLimit;
+    note.value = budgetNote;
+    count.textContent = `${note.value.length}/120`;
+
+    note.addEventListener("input", function() {
+      count.textContent = `${note.value.length}/120`;
+      localStorage.setItem("expensePulseBudgetNote", note.value);
+      budgetNote = note.value;
+    });
+  }
+
+  // Practical everyday spending categories
+  // User-customizable spending categories
+  const DEFAULT_CATEGORIES = [
+    "Food & Dining",
+    "Travel & Transport",
+    "Others"
+  ];
+
+  const categoryIcons = {
+    "Food & Dining": "utensils", "Groceries": "shopping-cart", "Travel & Transport": "bus",
+    "Shopping": "shopping-bag", "Bills & Utilities": "receipt-text", "Mobile & Internet": "smartphone",
+    "Healthcare": "heart-pulse", "Education": "graduation-cap", "Fuel": "fuel",
+    "Rent & Housing": "house", "Subscriptions": "repeat", "Banking & Finance": "building-2",
+    "Income & Transfers": "arrow-left-right", "Others": "more-horizontal"
+  };
+
+  const categoryClasses = {
+    "Food & Dining": "bg-amber-50 text-amber-700", "Groceries": "bg-lime-50 text-lime-700",
+    "Travel & Transport": "bg-indigo-50 text-indigo-700", "Shopping": "bg-purple-50 text-purple-700",
+    "Bills & Utilities": "bg-blue-50 text-blue-700", "Mobile & Internet": "bg-cyan-50 text-cyan-700",
+    "Healthcare": "bg-rose-50 text-rose-700", "Education": "bg-sky-50 text-sky-700",
+    "Fuel": "bg-orange-50 text-orange-700", "Rent & Housing": "bg-violet-50 text-violet-700",
+    "Subscriptions": "bg-fuchsia-50 text-fuchsia-700", "Banking & Finance": "bg-emerald-50 text-emerald-700",
+    "Income & Transfers": "bg-teal-50 text-teal-700", "Others": "bg-slate-100 text-slate-600"
+  };
+
+  
+const DEFAULT_CATEGORY_KEYWORDS = {
+  "Food & Dining": ["swiggy","zomato","restaurant","food","cafe","dominos","pizza","kfc","mcdonald"],
+  "Travel & Transport": ["uber","ola","rapido","ixigo","irctc","metro","bus","flight","train","cab","taxi","travel"],
+  "Others": []
+};
+
+let categoryKeywords = JSON.parse(localStorage.getItem("expensePulseCategoryKeywords") || "{}");
+if (!categoryKeywords || typeof categoryKeywords !== "object") categoryKeywords = {};
+
+function getCategoryKeywords(name) {
+  return [...new Set([
+    ...(DEFAULT_CATEGORY_KEYWORDS[name] || []),
+    ...(Array.isArray(categoryKeywords[name]) ? categoryKeywords[name] : [])
+  ])];
+}
+
+function saveCategoryKeywords() {
+  localStorage.setItem("expensePulseCategoryKeywords", JSON.stringify(categoryKeywords));
+}
+
+function inferCustomCategoryFromText(text) {
+  const value = String(text || "").toLowerCase();
+  for (const category of categoryNames) {
+    if (category === "Others") continue;
+    const keywords = getCategoryKeywords(category);
+    if (keywords.some(k => value.includes(String(k).toLowerCase()))) return category;
+  }
+  return null;
+}
+
+let categoryNames = JSON.parse(localStorage.getItem("expensePulseCategories") || "null");
+  if (!Array.isArray(categoryNames) || categoryNames.length < 1) categoryNames = [...DEFAULT_CATEGORIES];
+  categoryNames = [...new Set(categoryNames.map(x => String(x).trim()).filter(Boolean))];
+  if (!categoryNames.includes("Others")) categoryNames.push("Others");
+
+  // ---------------------------------------------------------
+  // HELPERS
+  // ---------------------------------------------------------
+  function money(value) {
+    return "₹" + Number(value || 0).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function normalizeText(text) {
+    return text
+      .replace(/\r/g, "")
+      .replace(/[ \t]+/g, " ")
+      .trim();
+  }
+
+  // ---------------------------------------------------------
+  // CATEGORY DETECTION
+  // FR-3: Merchant categorization
+  // ---------------------------------------------------------
+  function categorize(merchant, rawText = "") {
+  const m = String(merchant || "").toLowerCase();
+  const fullText = `${m} ${String(rawText || "").toLowerCase()}`;
+
+  // Custom user rules have priority.
+  const customMatch = inferCustomCategoryFromText(fullText);
+  if (customMatch) return customMatch;
+
+  const active = name =>
+    categoryNames.some(c => c.toLowerCase() === name.toLowerCase())
+      ? name : "Others";
+
+  if (/swiggy|zomato|restaurant|food|cafe|domino|pizza|kfc|mcdonald/.test(m))
+    return active("Food & Dining");
+
+  if (/uber|ola|rapido|ixigo|irctc|metro|bus|flight|train|cab|taxi|travel/.test(m))
+    return active("Travel & Transport");
+
+  if (/grocery|bigbasket|blinkit|zepto|instamart|dmart/.test(m))
+    return active("Groceries");
+
+  if (/amazon|flipkart|myntra|ajio|shopping|mall/.test(m))
+    return active("Shopping");
+
+  if (/electric|electricity|water bill|gas bill|broadband|utility/.test(m))
+    return active("Bills & Utilities");
+
+  if (/jio|airtel|vi |vodafone|bsnl|recharge|mobile|internet/.test(m))
+    return active("Mobile & Internet");
+
+  if (/hospital|pharmacy|medical|medicine|apollo|clinic|health/.test(m))
+    return active("Healthcare");
+
+  if (/college|school|university|course|udemy|coursera|education/.test(m))
+    return active("Education");
+
+  if (/petrol|diesel|fuel|indian oil|hpcl|bpcl|shell/.test(m))
+    return active("Fuel");
+
+  if (/rent|housing|landlord|maintenance/.test(m))
+    return active("Rent & Housing");
+
+  if (/netflix|spotify|prime video|subscription|hotstar|youtube premium/.test(m))
+    return active("Subscriptions");
+
+  if (/bank|atm|fee|charge|interest|emi|loan/.test(m))
+    return active("Banking & Finance");
+
+  return "Others";
+}
+
+
+  // ---------------------------------------------------------
+  // SMS PARSER
+  // FR-1 + FR-2
+  // ---------------------------------------------------------
+  function focusSmsInput() {
+    const el = document.getElementById("smsInput");
+    el.focus();
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function clearImportedSms() {
+    document.getElementById("smsInput").value = "";
+    document.getElementById("fileImportInfo").classList.add("hidden");
+    document.getElementById("smsTxtFile").value = "";
+    document.getElementById("smsCsvFile").value = "";
+    setStatus("Ready for pasted SMS or another file.", "info");
+  }
+
+  async function handleSmsFile(input, kind) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const messages = kind === "csv" ? extractSmsFromCSV(text) : extractSmsFromTXT(text);
+      const usable = messages.filter(Boolean);
+      if (!usable.length) {
+        setStatus(`No SMS messages were found in ${file.name}.`, "error");
+        return;
+      }
+      document.getElementById("smsInput").value = usable.join("\n\n");
+      document.getElementById("fileImportInfo").classList.remove("hidden");
+      document.getElementById("fileImportText").textContent = `${file.name} • ${usable.length} message${usable.length === 1 ? "" : "s"} loaded`;
+      setStatus(`${usable.length} SMS message${usable.length === 1 ? "" : "s"} loaded from ${kind.toUpperCase()}. Review or click Parse SMS.`, "info");
+    } catch (err) {
+      setStatus(`Could not read ${file.name}. Please use a valid ${kind.toUpperCase()} file.`, "error");
+    }
+  }
+
+  function extractSmsFromTXT(raw) {
+    return splitBankMessages(String(raw || ""));
+  }
+
+  function parseCSVLine(line) {
+    const cells = []; let cell = ""; let quoted = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (quoted && line[i + 1] === '"') { cell += '"'; i++; }
+        else quoted = !quoted;
+      } else if (ch === "," && !quoted) { cells.push(cell.trim()); cell = ""; }
+      else cell += ch;
+    }
+    cells.push(cell.trim());
+    return cells;
+  }
+
+  function extractSmsFromCSV(raw) {
+    const lines = String(raw || "").replace(/\r/g, "").split("\n").filter(line => line.trim());
+    if (!lines.length) return [];
+    const rows = lines.map(parseCSVLine);
+    const headers = rows[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ""));
+    const smsNames = ["sms","message","messages","text","body","content","alert","notification","transactionmessage","description"];
+    const smsIndex = headers.findIndex(h => smsNames.includes(h) || smsNames.some(n => h.includes(n)));
+
+    // If there is a recognizable SMS/message column, use it.
+    if (smsIndex >= 0) return rows.slice(1).map(r => r[smsIndex] || "").map(normalizeText).filter(Boolean);
+
+    // Otherwise accept one-column CSV or combine columns so bank exports with
+    // date/description/message fields can still be parsed by the same engine.
+    return rows.slice(1).map(r => r.join(" ")).map(normalizeText).filter(Boolean);
+  }
+
+  function parseSMS() {
+    const raw = document.getElementById("smsInput").value.trim();
+
+    if (!raw) {
+      setStatus("Please paste at least one bank/UPI SMS message first.", "error");
+      return;
+    }
+
+    const start = performance.now();
+
+    /*
+      Universal SMS splitting:
+      - Blank-line separated messages
+      - Lines beginning with common bank/SMS prefixes
+      - Fallback: one message per line
+    */
+    let messages = splitBankMessages(raw);
+
+    const parsed = [];
+
+    messages.forEach((message, index) => {
+      const tx = parseSingleSMS(message, index);
+      if (tx) parsed.push(tx);
+    });
+
+    if (!parsed.length) {
+      setStatus(
+        "I couldn't find a financial transaction in that text. Include an amount plus a transaction word such as debited, credited, paid, received, withdrawn, deposited, purchase, or transferred.",
+        "error"
+      );
+      return;
+    }
+
+    // Build a multi-signal duplicate index. A transaction is considered
+    // duplicate when strong identifiers match, or when the core financial
+    // fingerprint (amount + date + merchant + type) matches. This prevents
+    // the same SMS from being counted twice even if it is imported again
+    // from another TXT/CSV file or pasted manually.
+    const existingKeys = new Set();
+    transactions.forEach(t => getDuplicateKeys(t).forEach(k => existingKeys.add(k)));
+
+    let added = 0;
+    let duplicates = 0;
+
+    parsed.forEach(tx => {
+      const keys = getDuplicateKeys(tx);
+      const isDuplicate = keys.some(k => existingKeys.has(k));
+
+      if (isDuplicate) {
+        duplicates++;
+        return;
+      }
+
+      transactions.unshift(tx);
+      keys.forEach(k => existingKeys.add(k));
+      added++;
+    });
+
+    transactions = transactions.slice(0, 500);
+    saveData();
+    renderDashboard();
+
+    const elapsed = Math.round(performance.now() - start);
+
+    const duplicateText = duplicates
+      ? ` • ${duplicates} duplicate${duplicates === 1 ? "" : "s"} skipped`
+      : "";
+
+    setStatus(
+      `${parsed.length} transaction${parsed.length > 1 ? "s" : ""} detected • ${added} new record${added === 1 ? "" : "s"} added${duplicateText} • parsed in ${elapsed}ms.`,
+      "success"
+    );
+
+    document.getElementById("smsInput").value = "";
+  }
+
+  // ---------------------------------------------------------
+  // DUPLICATE TRANSACTION DETECTION
+  // ---------------------------------------------------------
+  function normalizeDuplicateValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function duplicateDate(value) {
+    const raw = normalizeDuplicateValue(value);
+    if (!raw) return "";
+
+    // Prefer YYYY-MM-DD when the parser already produced a date-like value.
+    const iso = raw.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (iso) return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
+
+    // Keep the complete normalized timestamp as a fallback.
+    return raw;
+  }
+
+  function getDuplicateKeys(tx) {
+    const amount = Number(tx.amount || 0).toFixed(2);
+    const date = duplicateDate(tx.timestamp);
+    const merchant = normalizeDuplicateValue(tx.merchant || tx.upiId || "unknown");
+    const type = normalizeDuplicateValue(tx.type || "");
+    const bank = normalizeDuplicateValue(tx.bank || "");
+    const reference = normalizeDuplicateValue(tx.reference || "");
+    const raw = normalizeDuplicateValue(tx.raw || "").replace(/[^a-z0-9]+/g, "");
+
+    const keys = [];
+
+    // Strongest signal: transaction/reference ID + amount + date.
+    if (reference) {
+      keys.push(`ref|${reference}|${amount}|${date}`);
+      keys.push(`ref|${reference}|${amount}`);
+    }
+
+    // Core financial fingerprint: amount + date + merchant + transaction type.
+    if (date && merchant) {
+      keys.push(`core|${amount}|${date}|${merchant}|${type}`);
+      keys.push(`core|${amount}|${date}|${merchant}`);
+    }
+
+    // Bank helps distinguish genuinely identical-looking records from different banks.
+    if (date && merchant && bank) {
+      keys.push(`bankcore|${bank}|${amount}|${date}|${merchant}|${type}`);
+    }
+
+    // Exact normalized SMS fallback catches an unchanged SMS even when a field
+    // could not be extracted cleanly.
+    if (raw.length >= 20) keys.push(`raw|${raw}`);
+
+    return [...new Set(keys)];
+  }
+
+  function splitBankMessages(raw) {
+    // SBI and some bank SMS batches can be concatenated without
+    // blank lines. Split every new "Dear UPI user" message.
+    const sbiParts = raw
+      .split(/(?=Dear\s+UPI\s+user\b)/i)
+      .map(normalizeText)
+      .filter(Boolean);
+
+    if (sbiParts.length > 1) return sbiParts;
+
+    // Common concatenated bank/UPI alert starts. This allows mixed
+    // sender styles to be pasted together without requiring blank lines.
+    const headerParts = raw
+      .split(/(?=(?:SBI|SBIN|HDFC|HDFCBK|ICICI|ICICIBANK|AXIS|AXISBK|PNB|BOB|CANBNK|KOTAK|IDFC|PAYTM|PHONEPE|GOOGLEPAY|GPAY|UPI|Dear\s+Customer|Dear\s+User)\b)/i)
+      .map(normalizeText)
+      .filter(Boolean);
+    if (headerParts.length > 1) return headerParts;
+
+    // First try blank-line separation.
+    const blankParts = raw
+      .split(/\n\s*\n/)
+      .map(normalizeText)
+      .filter(Boolean);
+
+    if (blankParts.length > 1) return blankParts;
+
+    // If multiple lines were pasted, treat each line as a message.
+    const lines = raw
+      .split(/\n/)
+      .map(normalizeText)
+      .filter(Boolean);
+
+    if (lines.length > 1) return lines;
+
+    return [normalizeText(raw)];
+  }
+
+  // ---------------------------------------------------------
+  // UNIVERSAL BANK / UPI SMS PARSER
+  // ---------------------------------------------------------
+  function parseSingleSMS(message, index) {
+    const text = normalizeText(message);
+
+    /*
+      A financial SMS normally contains at least one amount and
+      one transaction-related keyword.
+    */
+    const amount = extractAmount(text);
+
+    const transactionWord =
+      /\b(debit(?:ed)?|credit(?:ed)?|withdraw(?:n|al)?|deposit(?:ed)?|paid|payment|purchase|spent|received|transfer(?:red)?|sent|added|deducted|charged|refunded|refund|cash withdrawal|pos|atm)\b/i.test(text);
+
+    if (!amount || !transactionWord) {
+      return null;
+    }
+
+    const type = detectTransactionType(text);
+    const bank = extractBank(text);
+    const merchant = extractMerchant(text, bank);
+    const upiId = extractUPIId(text);
+    const account = extractAccount(text);
+    const reference = extractReference(text);
+    const timestamp = extractTimestamp(text);
+    // Categorize using the resolved merchant name plus the complete SMS.
+    // This makes "swiggy@bank" -> Swiggy -> Food & Dining, while still
+    // allowing custom user-trained category keywords to override defaults.
+    const category = categorize(
+      `${merchant} ${upiId} ${text}`
+    );
+
+    return {
+      id: Date.now() + index + Math.random(),
+      amount,
+      type,
+      bank,
+      merchant,
+      upiId,
+      account,
+      reference,
+      timestamp,
+      category,
+      raw: text
+    };
+  }
+
+  // ---------------------------------------------------------
+  // AMOUNT EXTRACTION
+  // Supports:
+  // ₹1,250.50
+  // Rs. 1,250
+  // Rs 1250
+  // INR 1250
+  // 1,250 INR
+  // amount of Rs 500
+  // ---------------------------------------------------------
+  function extractAmount(text) {
+    const patterns = [
+      // ₹500 / Rs 500 / Rs.500 / INR 500
+      /(?:₹|rs\.?|inr)\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/i,
+
+      // 500 INR
+      /([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\s*(?:₹|rs\.?|inr)\b/i,
+
+      // "debited by 641.00", "credited by 500", "paid 250"
+      /(?:debited|credited|withdrawn|deposited|paid|received|spent|charged|deducted|transferred|transfer(?:red)?|purchase)\s*(?:by|of|for|with|amount)?\s*(?:₹|rs\.?|inr)?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/i,
+
+      // "amount is 500", "amount: 500"
+      /(?:amount|amt|sum)\s*(?:is|of|:)?\s*(?:₹|rs\.?|inr)?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/i,
+
+      // "A/C ... debited by 641.00"
+      /(?:debited|credited)\s+by\s+([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/i
+    ];
+
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match) {
+        const value = Number(match[1].replace(/,/g, ""));
+        if (Number.isFinite(value) && value > 0) return value;
+      }
+    }
+
+    return null;
+  }
+
+  // ---------------------------------------------------------
+  // TRANSACTION TYPE
+  // ---------------------------------------------------------
+  function detectTransactionType(text) {
+    // Refunds are money coming back.
+    if (/\b(refund(?:ed)?|reversed|reversal|cashback|cash back)\b/i.test(text)) {
+      return "Credited";
+    }
+
+    if (
+      /\b(credit(?:ed)?|received|deposit(?:ed)?|deposited|added|salary|credited to)\b/i.test(text) &&
+      !/\b(debit(?:ed)?|deducted|paid|spent|purchase|withdrawn|withdrawal|charged)\b/i.test(text)
+    ) {
+      return "Credited";
+    }
+
+    return "Debited";
+  }
+
+  // ---------------------------------------------------------
+  // BANK NAME
+  // ---------------------------------------------------------
+  function extractBank(text) {
+    const banks = [
+      "State Bank of India",
+      "SBI",
+      "HDFC Bank",
+      "HDFC",
+      "ICICI Bank",
+      "ICICI",
+      "Axis Bank",
+      "Axis",
+      "Punjab National Bank",
+      "PNB",
+      "Bank of Baroda",
+      "BOB",
+      "Canara Bank",
+      "Union Bank",
+      "Kotak Mahindra Bank",
+      "Kotak",
+      "IndusInd Bank",
+      "IDFC FIRST Bank",
+      "IDFC",
+      "Yes Bank",
+      "Federal Bank",
+      "Bandhan Bank",
+      "RBL Bank",
+      "AU Small Finance Bank",
+      "Paytm Payments Bank",
+      "Paytm",
+      "Airtel Payments Bank",
+      "India Post Payments Bank",
+      "Jio Payments Bank"
+    ];
+
+    const found = banks.find(bank =>
+      new RegExp(`\\b${escapeRegex(bank)}\\b`, "i").test(text)
+    );
+
+    return found || "Bank / UPI";
+  }
+
+  // ---------------------------------------------------------
+  // UPI ID / VPA
+  // ---------------------------------------------------------
+  function extractUPIId(text) {
+    const match = text.match(
+      /\b([a-zA-Z0-9][a-zA-Z0-9._-]{1,50}@[a-zA-Z][a-zA-Z0-9._-]{1,40})\b/
+    );
+
+    return match ? match[1] : "";
+  }
+
+  // ---------------------------------------------------------
+  // ACCOUNT
+  // ---------------------------------------------------------
+  function extractAccount(text) {
+    const patterns = [
+      // A/C X1028, A/C XX1028, A/C XXXX1028
+      /(?:a\/c|account|acct|ac)\s*(?:no\.?|number)?\s*([xX*]+\d{2,8})/i,
+
+      // A/C 1028 / account 1028
+      /(?:a\/c|account|acct|ac)\s*(?:no\.?|number)?\s*(\d{2,8})/i,
+
+      // ending with 1028
+      /(?:ending|ends)\s*(?:with|in)\s*(\d{2,8})/i
+    ];
+
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match) {
+        return match[1].trim();
+      }
+    }
+
+    return "";
+  }
+
+  // ---------------------------------------------------------
+  // REFERENCE / TRANSACTION ID
+  // ---------------------------------------------------------
+  function extractReference(text) {
+    const patterns = [
+      /(?:upi\s*)?(?:ref(?:erence)?(?:\s*no\.?)?|refno|txn(?:action)?\s*(?:id|no\.?)?|transaction\s*(?:id|no\.?)?|utr|rrn)\s*[:#=-]?\s*([A-Za-z0-9-]{6,30})/i,
+
+      // SBI style: "Refno 626649404898"
+      /\bref\s*no\s*[:#=-]?\s*([A-Za-z0-9-]{6,30})\b/i,
+
+      // Long numeric transaction/reference number as fallback.
+      /\b\d{10,18}\b/
+    ];
+
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match) {
+        return match[1] || match[0];
+      }
+    }
+
+    return "";
+  }
+
+  // ---------------------------------------------------------
+  // MERCHANT / PERSON / ENTITY
+  // ---------------------------------------------------------
+  function extractMerchant(text, bank) {
+    const upiId = extractUPIId(text);
+
+    // Merchant Intelligence: resolve common UPI handles / aliases to a
+    // human-readable merchant instead of storing opaque values like
+    // "UPI/xyz123" or "swiggy@bank". This is rule-based and runs locally.
+    const merchantAliases = [
+      { name: "Swiggy", keys: ["swiggy", "swiggyinstamart", "swiggy.in"] },
+      { name: "Zomato", keys: ["zomato", "zomato.com"] },
+      { name: "Blinkit", keys: ["blinkit", "grofers"] },
+      { name: "Zepto", keys: ["zepto"] },
+      { name: "Amazon", keys: ["amazon", "amazonpay"] },
+      { name: "Flipkart", keys: ["flipkart"] },
+      { name: "Myntra", keys: ["myntra"] },
+      { name: "AJIO", keys: ["ajio"] },
+      { name: "Uber", keys: ["uber"] },
+      { name: "Ola", keys: ["olacabs", "ola"] },
+      { name: "Rapido", keys: ["rapido"] },
+      { name: "ixigo", keys: ["ixigo"] },
+      { name: "IRCTC", keys: ["irctc"] },
+      { name: "Jio", keys: ["jio"] },
+      { name: "Airtel", keys: ["airtel"] },
+      { name: "Netflix", keys: ["netflix"] },
+      { name: "Spotify", keys: ["spotify"] },
+      { name: "Google Pay", keys: ["googlepay", "gpay"] },
+      { name: "PhonePe", keys: ["phonepe"] },
+      { name: "Paytm", keys: ["paytm"] }
+    ];
+
+    const resolveKnownMerchant = value => {
+      const compact = String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (!compact) return "";
+      const hit = merchantAliases.find(item =>
+        item.keys.some(key => compact.includes(key.replace(/[^a-z0-9]/g, "")))
+      );
+      return hit ? hit.name : "";
+    };
+
+    // Check the complete SMS first. Some bank messages contain a merchant
+    // name even when the VPA itself is opaque.
+    const knownFromMessage = resolveKnownMerchant(text);
+    if (knownFromMessage) return knownFromMessage;
+
+    if (upiId) {
+      const localPart = upiId.split("@")[0];
+      const knownFromUpi = resolveKnownMerchant(localPart);
+      if (knownFromUpi) return knownFromUpi;
+
+      if (/^[a-zA-Z][a-zA-Z ._-]{2,40}$/.test(localPart)) {
+        return prettifyMerchant(localPart);
+      }
+
+      // Keep the original VPA only when we genuinely cannot resolve it.
+      return upiId;
+    }
+
+    /*
+      SBI-style UPI SMS:
+      "trf to ixigo"
+      "trf to swiggy"
+      "trf to ABC"
+    */
+    const trfMatch = text.match(
+      /\btrf\s+to\s+([A-Za-z0-9][A-Za-z0-9 .&'_-]{1,50}?)(?=\s+(?:refno|ref\s*no|on\s+date|dated|if\s+not|call[-:]|for\s+other|$))/i
+    );
+
+    if (trfMatch) {
+      return prettifyMerchant(trfMatch[1]);
+    }
+
+    const patterns = [
+      /(?:paid|payment|sent|transferred|transfer(?:red)?|debited)\s+(?:to|towards)\s+["']?([^,.;]+?)(?:\s+(?:on|via|using|from)\b|[,.]|$)/i,
+      /(?:to|towards|at|for)\s+["']?([^,.;]+?)(?:\s+(?:on|via|using|from|ref|upi)\b|[,.]|$)/i,
+      /(?:merchant|payee|beneficiary)\s*[:=-]\s*["']?([^,.;]+)["']?/i,
+      /(?:from)\s+["']?([^,.;]+?)(?:\s+(?:on|via|using|ref)\b|[,.]|$)/i
+    ];
+
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match) {
+        let candidate = match[1].trim();
+
+        candidate = candidate
+          .replace(/\b(?:a\/c|account|acct)\b.*$/i, "")
+          .replace(/\b(?:xx+|\*+)\d+\b/gi, "")
+          .trim();
+
+        if (candidate.length >= 2 && candidate.length <= 60) {
+          return prettifyMerchant(candidate);
+        }
+      }
+    }
+
+    const knownMerchants = [
+      "Swiggy", "Zomato", "Uber", "Ola", "Rapido", "Amazon",
+      "Flipkart", "Myntra", "AJIO", "Jio", "Airtel", "Vi",
+      "PhonePe", "Paytm", "Google Pay", "GPay", "Canteen",
+      "IRCTC", "Netflix", "Spotify", "Zepto", "Blinkit", "ixigo"
+    ];
+
+    const found = knownMerchants.find(name =>
+      new RegExp(`\\b${escapeRegex(name)}\\b`, "i").test(text)
+    );
+
+    return found || "Unknown Merchant";
+  }
+
+  function prettifyMerchant(value) {
+    const cleaned = value
+      .replace(/\s+/g, " ")
+      .replace(/^(?:VPA|UPI)\s*[:=-]?\s*/i, "")
+      .trim();
+
+    return cleaned
+      .split(" ")
+      .map(word => {
+        if (word.length <= 3) return word.toUpperCase();
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join(" ");
+  }
+
+  // ---------------------------------------------------------
+  // DATE + TIME
+  // Supports DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD and time.
+  // ---------------------------------------------------------
+  function extractTimestamp(text) {
+    const datePatterns = [
+      // 23Sep26 / 23 Sep 2026 / 23-Sep-26
+      /(\d{1,2})\s*[-/]?\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-/]?\s*(\d{2,4})/i,
+
+      // 23-09-2026 / 23/09/26
+      /(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/,
+
+      // 2026-09-23
+      /(\d{4}[-/]\d{1,2}[-/]\d{1,2})/
+    ];
+
+    const timeMatch = text.match(
+      /\b(\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?)\b/i
+    );
+
+    for (const pattern of datePatterns) {
+      const match = text.match(pattern);
+
+      if (match) {
+        if (pattern === datePatterns[0]) {
+          let year = match[3];
+          if (year.length === 2) year = "20" + year;
+
+          const monthMap = {
+            jan: "01", feb: "02", mar: "03", apr: "04",
+            may: "05", jun: "06", jul: "07", aug: "08",
+            sep: "09", oct: "10", nov: "11", dec: "12"
+          };
+
+          const month = monthMap[match[2].slice(0, 3).toLowerCase()];
+          const date = `${match[1].padStart(2, "0")}-${month}-${year}`;
+
+          return date + (timeMatch ? ` ${timeMatch[1]}` : "");
+        }
+
+        return match[1] + (timeMatch ? ` ${timeMatch[1]}` : "");
+      }
+    }
+
+    const relative = text.match(/\b(today|yesterday|tomorrow)\b/i);
+    if (relative) {
+      return relative[1].charAt(0).toUpperCase() + relative[1].slice(1);
+    }
+
+    return new Date().toLocaleString("en-IN");
+  }
+
+  function escapeRegex(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  // ---------------------------------------------------------
+  // DEMO DATA
+  // ---------------------------------------------------------
+  function loadDemoSMS() {
+    document.getElementById("smsInput").value =
+`Rs.240 debited from A/c XX1234 to swiggy@upi on 30-09-2026 at 14:15. UPI Ref 1234567890.
+
+Rs.120 debited from A/c XX1234 to Uber@upi on 29-09-2026 at 18:30. UPI Ref 2234567890.
+
+INR 299 debited from A/c XX1234 to Jio@upi on 28-09-2026 at 10:20.
+
+Rs.850 debited from A/c XX1234 to Amazon@upi on 27-09-2026 at 16:40.
+
+Rs.450 debited from A/c XX1234 to Canteen@upi on 26-09-2026 at 13:10.
+
+Rs.500 credited to A/c XX1234 from salary@upi on 25-09-2026 at 09:00.`;
+
+    setStatus("Demo SMS loaded. Click Parse SMS to process it.", "info");
+  }
+
+  // ---------------------------------------------------------
+  // BUDGET SETTINGS
+  // ---------------------------------------------------------
+  function saveBudgetSettings() {
+    const input = document.getElementById("budgetInput");
+    const note = document.getElementById("budgetNote");
+    const status = document.getElementById("budgetSaveStatus");
+
+    const value = Number(input.value);
+
+    if (!Number.isFinite(value) || value <= 0) {
+      status.textContent = "Enter a budget greater than ₹0.";
+      status.className = "text-[10px] text-red-600 font-semibold";
+      input.focus();
+      return;
+    }
+
+    budgetLimit = Math.round(value * 100) / 100;
+    budgetNote = note.value.trim();
+
+    localStorage.setItem("expensePulseBudget", String(budgetLimit));
+    localStorage.setItem("expensePulseBudgetNote", budgetNote);
+
+    status.textContent = "Budget saved";
+    status.className = "text-[10px] text-emerald-600 font-semibold";
+
+    renderDashboard();
+
+    setTimeout(() => {
+      status.textContent = "";
+    }, 1800);
+  }
+
+  // ---------------------------------------------------------
+  // RENDER DASHBOARD
+  // ---------------------------------------------------------
+  function renderDashboard() {
+    const debits = transactions.filter(t => t.type === "Debited");
+
+    const total = debits.reduce((sum, t) => sum + Number(t.amount), 0);
+    const avg = debits.length ? total / debits.length : 0;
+    const budgetLeft = Math.max(0, budgetLimit - total);
+
+    document.getElementById("totalSpend").textContent = money(total);
+    document.getElementById("transactionCount").textContent = transactions.length;
+    document.getElementById("averageSpend").textContent = money(avg);
+    document.getElementById("budgetLeft").textContent = money(budgetLeft);
+    document.getElementById("budgetStatus").textContent =
+      total > budgetLimit ? "Budget exceeded" : `Remaining from ${money(budgetLimit)} budget`;
+
+    renderBudget(total);
+    renderCategoryList(debits);
+    renderTransactions();
+    renderCharts(debits);
+    lucide.createIcons();
+  }
+
+  // ---------------------------------------------------------
+  // BUDGET WARNING
+  // FR-5
+  // ---------------------------------------------------------
+  function renderBudget(total) {
+    const alertLimit = budgetLimit * 0.80;
+    const percent = budgetLimit > 0 ? (total / budgetLimit) * 100 : 0;
+    const clamped = Math.min(percent, 100);
+    const remaining = budgetLimit - total;
+
+    document.getElementById("budgetSpent").textContent = money(total);
+    document.getElementById("budgetRemainingLarge").textContent = money(Math.max(0, remaining));
+    document.getElementById("budgetLimitLabel").textContent = `Budget limit: ${money(budgetLimit)}`;
+    document.getElementById("budgetLimitSmall").textContent = `${money(budgetLimit)} limit`;
+    document.getElementById("budgetLimitCard").textContent = money(budgetLimit);
+    document.getElementById("budgetAlertAmount").textContent = money(alertLimit);
+
+    const remainingMessage = document.getElementById("budgetRemainingMessage");
+
+    if (remaining > 0) {
+      remainingMessage.textContent = `You can spend up to ${money(remaining)} more this month.`;
+      remainingMessage.className = "text-xs text-indigo-700 mt-1";
+    } else if (remaining === 0) {
+      remainingMessage.textContent = "You have reached your monthly budget.";
+      remainingMessage.className = "text-xs text-amber-700 mt-1";
+    } else {
+      remainingMessage.textContent = `You are ${money(Math.abs(remaining))} over your monthly budget.`;
+      remainingMessage.className = "text-xs text-red-700 mt-1";
+    }
+
+    const badge = document.getElementById("budgetBadge");
+    badge.textContent = `${Math.round(percent)}% Used`;
+
+    const warning = document.getElementById("budgetWarning");
+    const warningIcon = document.getElementById("budgetWarningIcon");
+    const title = document.getElementById("budgetWarningTitle");
+    const text = document.getElementById("budgetWarningText");
+
+    if (total >= budgetLimit) {
+      warning.className = "mb-6 p-4 rounded-2xl border border-red-200 bg-red-50 flex items-start gap-3";
+      warningIcon.className = "h-10 w-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0";
+      title.className = "font-extrabold text-sm text-red-800";
+      text.className = "text-xs mt-1 text-red-700";
+      title.textContent = "Monthly budget exceeded";
+      text.textContent = `You have spent ${money(total)} against your ${money(budgetLimit)} limit.`;
+      warning.classList.remove("hidden");
+    } else if (total >= alertLimit) {
+      warning.className = "mb-6 p-4 rounded-2xl border border-amber-200 bg-amber-50 flex items-start gap-3";
+      warningIcon.className = "h-10 w-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0";
+      title.className = "font-extrabold text-sm text-amber-800";
+      text.className = "text-xs mt-1 text-amber-700";
+      title.textContent = "Budget warning: 80% reached";
+      text.textContent = `You have used ${Math.round(percent)}% of your monthly budget. ${money(Math.max(0, remaining))} remains.`;
+      warning.classList.remove("hidden");
+    } else {
+      warning.classList.add("hidden");
+    }
+
+    if (percent >= 100) {
+      badge.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-red-50 text-red-700";
+      document.getElementById("budgetProgress").className =
+        "h-full rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-700";
+    } else if (percent >= 80) {
+      badge.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700";
+      document.getElementById("budgetProgress").className =
+        "h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-700";
+    } else {
+      badge.className = "px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700";
+      document.getElementById("budgetProgress").className =
+        "h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-700";
+    }
+  }
+
+  // ---------------------------------------------------------
+  // CATEGORY SUMMARY
+  // ---------------------------------------------------------
+  function saveCategories() {
+    localStorage.setItem("expensePulseCategories", JSON.stringify(categoryNames));
+  }
+
+  function addCategory() {
+  const input = document.getElementById("newCategoryInput");
+  const name = input.value.trim();
+  if (!name) return;
+
+  if (categoryNames.some(c => c.toLowerCase() === name.toLowerCase())) {
+    input.value = "";
+    return;
+  }
+
+  categoryNames.splice(categoryNames.length - 1, 0, name);
+  categoryKeywords[name] = categoryKeywords[name] || [];
+
+  saveCategories();
+  saveCategoryKeywords();
+  input.value = "";
+  renderDashboard();
+}
+
+  function removeCategory(name) {
+    name = String(name || "").trim();
+
+    // "Others" is the permanent fallback category and cannot be removed.
+    if (!name || name === "Others") return;
+
+    const exists = categoryNames.some(c => c.toLowerCase() === name.toLowerCase());
+    if (!exists) return;
+
+    // Remove the category from the active category list.
+    categoryNames = categoryNames.filter(
+      c => c.toLowerCase() !== name.toLowerCase()
+    );
+
+    // Any existing transaction that used the removed category is safely
+    // moved to Others instead of becoming an invisible/orphaned category.
+    transactions.forEach(t => {
+      if (String(t.category || "").toLowerCase() === name.toLowerCase()) {
+        t.category = "Others";
+      }
+    });
+
+    saveCategories();
+    saveData();
+    renderDashboard();
+
+    setStatus(`Category "${name}" removed. Existing transactions were moved to Others.`, "success");
+  }
+
+  function renderKeywordCategorySelect() {
+  const select = document.getElementById("keywordCategorySelect");
+  if (!select) return;
+  select.innerHTML = categoryNames
+    .filter(c => c !== "Others")
+    .map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`)
+    .join("");
+}
+
+function addCategoryKeywords() {
+  const select = document.getElementById("keywordCategorySelect");
+  const input = document.getElementById("categoryKeywordInput");
+  const status = document.getElementById("categoryKeywordStatus");
+  if (!select || !input || !select.value) return;
+
+  const category = select.value;
+  const keywords = input.value.split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+  if (!keywords.length) return;
+
+  categoryKeywords[category] = [...new Set([...(categoryKeywords[category] || []), ...keywords])];
+  saveCategoryKeywords();
+
+  // Immediately re-categorize existing transactions.
+  transactions.forEach(t => {
+    const matched = inferCustomCategoryFromText(`${t.merchant || ""} ${t.raw || ""}`);
+    if (matched) t.category = matched;
+  });
+
+  saveData();
+  input.value = "";
+  if (status) status.textContent = `Rules saved for ${category}: ${categoryKeywords[category].join(", ")}`;
+  renderDashboard();
+}
+
+function renderCategoryList(debits) {
+    const totals = {};
+    categoryNames.forEach(c => totals[c] = 0);
+    debits.forEach(t => totals[t.category] = (totals[t.category] || 0) + Number(t.amount));
+    const total = debits.reduce((sum, t) => sum + Number(t.amount), 0);
+    const container = document.getElementById("categoryList");
+
+    container.innerHTML = categoryNames.map(category => {
+      const value = totals[category] || 0;
+      const percent = total ? Math.round((value / total) * 100) : 0;
+      const icon = categoryIcons[category] || "tag";
+      const classes = categoryClasses[category] || "bg-slate-100 text-slate-600";
+      return `<div class="category-chip p-4 rounded-2xl ${classes} bg-opacity-50 group">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="h-9 w-9 rounded-xl bg-white/80 flex items-center justify-center shrink-0"><i data-lucide="${icon}" class="w-4 h-4"></i></span>
+            <div class="min-w-0"><p class="text-xs font-extrabold truncate">${escapeHTML(category)}</p><p class="text-[10px] opacity-70">${percent}% of spend</p></div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0"><p class="text-sm font-extrabold">${money(value)}</p>${category !== "Others" ? `<button type="button"
+              onclick='removeCategory(${JSON.stringify(category)})'
+              class="w-8 h-8 rounded-lg bg-white/70 hover:bg-white flex items-center justify-center text-current opacity-70 hover:opacity-100 transition-all active:scale-90"
+              title="Remove category"
+              aria-label="Remove ${escapeHTML(category)} category">
+              <i data-lucide="x" class="w-4 h-4 pointer-events-none"></i>
+            </button>` : ""}</div>
+        </div>
+      </div>`;
+    }).join("");
+    lucide.createIcons();
+  
+  renderKeywordCategorySelect();
+}
+
+  // ---------------------------------------------------------
+  // TRANSACTION TABLE
+  // ---------------------------------------------------------
+  function renderTransactions() {
+    const tbody = document.getElementById("transactionTable");
+    document.getElementById("tableCount").textContent =
+      `${transactions.length} record${transactions.length === 1 ? "" : "s"}`;
+
+    if (!transactions.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="px-5 py-14 text-center">
+            <div class="mx-auto h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+              <i data-lucide="inbox" class="w-6 h-6"></i>
+            </div>
+            <p class="font-bold text-slate-700">No transactions yet</p>
+            <p class="text-xs text-slate-400 mt-1">Paste SMS above and click “Parse SMS”.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const chronological = [...transactions].reverse();
+    let runningSpend = 0;
+    const remainingById = new Map();
+
+    chronological.forEach(t => {
+      if (t.type === "Debited") {
+        runningSpend += Number(t.amount);
+      }
+      remainingById.set(t.id, budgetLimit - runningSpend);
+    });
+
+    tbody.innerHTML = transactions.map(t => {
+      const debit = t.type === "Debited";
+      const categoryClass =
+        categoryClasses[t.category] || categoryClasses.Others;
+
+      const remaining = remainingById.get(t.id);
+
+      let remainingHTML = `<span class="text-slate-400">—</span>`;
+
+      if (debit) {
+        if (remaining >= 0) {
+          remainingHTML = `
+            <div>
+              <p class="text-sm font-extrabold text-emerald-600">${money(remaining)}</p>
+              <p class="text-[10px] text-slate-400">left after spend</p>
+            </div>
+          `;
+        } else {
+          remainingHTML = `
+            <div>
+              <p class="text-sm font-extrabold text-red-600">-${money(Math.abs(remaining))}</p>
+              <p class="text-[10px] text-red-400">over budget</p>
+            </div>
+          `;
+        }
+      }
+
+      const entity = t.merchant || t.bank || "Unknown";
+      const reference = t.reference || "—";
+
+      return `
+        <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/70 transition">
+          <td class="px-5 py-4">
+            <p class="text-sm font-bold text-slate-800">${escapeHTML(t.timestamp)}</p>
+          </td>
+
+          <td class="px-5 py-4">
+            <p class="text-sm font-bold text-slate-800">${escapeHTML(entity)}</p>
+            <p class="text-[10px] text-slate-400 mt-1">${escapeHTML(t.bank || "")}${t.upiId ? ` • ${escapeHTML(t.upiId)}` : ""}</p>
+          </td>
+
+          <td class="px-5 py-4">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold
+              ${debit
+                ? "bg-red-50 text-red-700 border border-red-100"
+                : "bg-emerald-50 text-emerald-700 border border-emerald-100"}">
+              <i data-lucide="${debit ? "arrow-up-right" : "arrow-down-left"}" class="w-3 h-3"></i>
+              ${t.type}
+            </span>
+          </td>
+
+          <td class="px-5 py-4">
+            <span class="inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border ${categoryClass}">
+              ${escapeHTML(t.category)}
+            </span>
+          </td>
+
+          <td class="px-5 py-4">
+            <p class="text-xs font-bold text-slate-600">${escapeHTML(reference)}</p>
+            ${t.account ? `<p class="text-[10px] text-slate-400 mt-1">${escapeHTML(t.account)}</p>` : ""}
+          </td>
+
+          <td class="px-5 py-4 text-right">
+            <p class="text-sm font-extrabold ${debit ? "text-slate-900" : "text-emerald-600"}">
+              ${debit ? "-" : "+"}${money(t.amount)}
+            </p>
+          </td>
+
+          <td class="px-5 py-4 text-right">
+            ${remainingHTML}
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // ---------------------------------------------------------
+  // CHARTS
+  // FR-4: Donut + daily histogram/bar chart
+  // ---------------------------------------------------------
+  function renderCharts(debits) {
+    const categoryTotals = {};
+    categoryNames.forEach(c => categoryTotals[c] = 0);
+
+    debits.forEach(t => {
+      categoryTotals[t.category] =
+        (categoryTotals[t.category] || 0) + Number(t.amount);
+    });
+
+    const categoryCanvas = document.getElementById("categoryChart");
+    if (!categoryCanvas || typeof Chart === "undefined") return;
+
+    if (categoryChart) categoryChart.destroy();
+
+    const hasCategoryData = categoryNames.some(c => Number(categoryTotals[c]) > 0);
+    const categoryData = hasCategoryData
+      ? categoryNames.map(c => Number(categoryTotals[c]) || 0)
+      : categoryNames.map(() => 1);
+
+    categoryChart = new Chart(
+      categoryCanvas,
+      {
+        type: "doughnut",
+        data: {
+          labels: categoryNames,
+          datasets: [{
+            data: categoryData,
+            backgroundColor: [
+              "#f59e0b",
+              "#6366f1",
+              "#10b981",
+              "#a855f7",
+              "#94a3b8"
+            ],
+            borderWidth: 0,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "68%",
+          plugins: {
+            title: {
+              display: true,
+              text: hasCategoryData ? "Spending" : "No spending yet",
+              position: "top",
+              align: "center",
+              color: "#0f172a",
+              font: { size: 13, weight: "700" },
+              padding: { bottom: 8 }
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                usePointStyle: true,
+                pointStyle: "circle",
+                padding: 14,
+                font: { size: 11, weight: "600" }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return ` ${ctx.label}: ${money(ctx.raw)}`;
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+
+    renderSpendingSummary(debits);
+    renderSpendingTrend(debits);
+  }
+
+  function setSpendingPeriod(period) {
+    spendingPeriod = period;
+    const debits = transactions.filter(t => t.type === "Debited");
+    ["daily", "weekly", "monthly"].forEach(p => {
+      const btn = document.getElementById(`spendTab${p.charAt(0).toUpperCase() + p.slice(1)}`);
+      if (!btn) return;
+      btn.className = p === period
+        ? "px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-white text-indigo-600 shadow-sm transition"
+        : "px-3 py-1.5 rounded-lg text-[11px] font-extrabold text-slate-500 transition";
+    });
+    renderSpendingTrend(debits);
+  }
+
+  function renderSpendingSummary(debits) {
+    const dated = debits.map(t => ({...t, key: getDateKey(t.timestamp)})).filter(t => t.key);
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const weekStart = new Date(now);
+    const day = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - day);
+    weekStart.setHours(0,0,0,0);
+    const month = now.getMonth();
+    const year = now.getFullYear();
+
+    const today = dated.filter(t => t.key === todayKey).reduce((a,t) => a + Number(t.amount), 0);
+    const week = dated.filter(t => {
+      const d = new Date(t.key + "T00:00:00");
+      return d >= weekStart && d <= now;
+    }).reduce((a,t) => a + Number(t.amount), 0);
+    const currentMonth = dated.filter(t => {
+      const d = new Date(t.key + "T00:00:00");
+      return d.getMonth() === month && d.getFullYear() === year;
+    }).reduce((a,t) => a + Number(t.amount), 0);
+
+    const a = document.getElementById("spendToday");
+    const b = document.getElementById("spendWeek");
+    const c = document.getElementById("spendMonth");
+    if (a) a.textContent = money(today);
+    if (b) b.textContent = money(week);
+    if (c) c.textContent = money(currentMonth);
+  }
+
+  function renderSpendingTrend(debits) {
+    const buckets = {};
+    debits.forEach(t => {
+      const key = getDateKey(t.timestamp);
+      if (!key) return;
+      const d = new Date(key + "T00:00:00");
+      let bucket;
+      if (spendingPeriod === "daily") {
+        bucket = key;
+      } else if (spendingPeriod === "weekly") {
+        const start = new Date(d);
+        start.setDate(d.getDate() - d.getDay());
+        bucket = localDateKey(start);
+      } else {
+        bucket = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+      }
+      buckets[bucket] = (buckets[bucket] || 0) + Number(t.amount);
+    });
+
+    const keys = Object.keys(buckets).sort();
+    let labels;
+    if (spendingPeriod === "daily") {
+      labels = keys.map(formatDateLabel);
+    } else if (spendingPeriod === "weekly") {
+      labels = keys.map(k => `Week of ${formatDateLabel(k)}`);
+    } else {
+      labels = keys.map(k => {
+        const [y,m] = k.split("-");
+        return new Date(Number(y), Number(m)-1, 1).toLocaleDateString("en-IN", {month:"short", year:"numeric"});
+      });
+    }
+
+    const subtitle = document.getElementById("spendingTrendSubtitle");
+    if (subtitle) subtitle.textContent = spendingPeriod === "daily"
+      ? "Daily debit amount by transaction date"
+      : spendingPeriod === "weekly"
+        ? "Total debit spending grouped by week"
+        : "Total debit spending grouped by month";
+
+    if (dailyChart) dailyChart.destroy();
+    const canvas = document.getElementById("dailyChart");
+    if (!canvas) return;
+    dailyChart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: keys.length ? labels : ["No data"],
+        datasets: [{
+          label: spendingPeriod === "daily" ? "Daily Spend" : spendingPeriod === "weekly" ? "Weekly Spend" : "Monthly Spend",
+          data: keys.length ? keys.map(k => buckets[k]) : [0],
+          borderRadius: 8,
+          backgroundColor: "#6366f1",
+          hoverBackgroundColor: "#4f46e5",
+          maxBarThickness: 55
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: value => "₹" + value }, grid: { color: "#eef2f7" } },
+          x: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${money(ctx.raw)}` } }
+        }
+      }
+    });
+  }
+
+  function localDateKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+  }
+
+  function getDateKey(timestamp) {
+    const value = String(timestamp || "");
+    const iso = value.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+    if (iso) return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
+
+    const numeric = value.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})/);
+    if (numeric) {
+      let year = Number(numeric[3]);
+      if (year < 100) year += 2000;
+      return `${year}-${String(numeric[2]).padStart(2,"0")}-${String(numeric[1]).padStart(2,"0")}`;
+    }
+
+    const named = value.match(/(\d{1,2})\s*[-/]?\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-/]?\s*(\d{2,4})/i);
+    if (named) {
+      const months = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+      let year = Number(named[3]);
+      if (year < 100) year += 2000;
+      return `${year}-${String(months[named[2].slice(0,3).toLowerCase()]).padStart(2,"0")}-${String(named[1]).padStart(2,"0")}`;
+    }
+
+    if (/\btoday\b/i.test(value)) return localDateKey(new Date());
+    if (/\byesterday\b/i.test(value)) { const d = new Date(); d.setDate(d.getDate()-1); return localDateKey(d); }
+    return null;
+  }
+
+  function formatDateLabel(key) {
+    const d = new Date(key + "T00:00:00");
+    return d.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short"
+    });
+  }
+
+  // ---------------------------------------------------------
+  // EXPORT
+  // FR-6
+  // ---------------------------------------------------------
+  function exportCSV() {
+    if (!transactions.length) {
+      alert("There are no parsed transactions to export.");
+      return;
+    }
+
+    const rows = transactions.map(t => ({
+      "Date & Time": t.timestamp,
+      "Bank": t.bank || "",
+      "Merchant / VPA": t.merchant || "",
+      "UPI ID": t.upiId || "",
+      "Account": t.account || "",
+      "Transaction Type": t.type,
+      "Category": t.category,
+      "Reference / UTR": t.reference || "",
+      "Amount (INR)": t.amount
+    }));
+
+    const headers = Object.keys(rows[0]);
+    const csv = [
+      headers.join(","),
+      ...rows.map(row =>
+        headers.map(h => `"${String(row[h]).replace(/"/g, '""')}"`).join(",")
+      )
+    ].join("\n");
+
+    downloadFile(
+      "expensepulse_transactions.csv",
+      "text/csv;charset=utf-8;",
+      "\ufeff" + csv
+    );
+
+    toggleExportMenu();
+  }
+
+  function exportExcel() {
+    if (!transactions.length) {
+      alert("There are no parsed transactions to export.");
+      return;
+    }
+
+    if (typeof XLSX === "undefined") {
+      alert("Excel export library could not be loaded. Please use CSV export.");
+      return;
+    }
+
+    const rows = transactions.map(t => ({
+      "Date & Time": t.timestamp,
+      "Bank": t.bank || "",
+      "Merchant / VPA": t.merchant || "",
+      "UPI ID": t.upiId || "",
+      "Account": t.account || "",
+      "Transaction Type": t.type,
+      "Category": t.category,
+      "Reference / UTR": t.reference || "",
+      "Amount (INR)": t.amount
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet["!cols"] = [
+      { wch: 22 },
+      { wch: 24 },
+      { wch: 28 },
+      { wch: 30 },
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 20 },
+      { wch: 18 },
+      { wch: 16 }
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+
+    XLSX.writeFile(workbook, "expensepulse_transactions.xlsx");
+    toggleExportMenu();
+  }
+
+  function downloadFile(filename, type, content) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---------------------------------------------------------
+  // UI
+  // ---------------------------------------------------------
+  function toggleExportMenu() {
+    const menu = document.getElementById("exportMenu");
+    const button = document.querySelector('button[onclick="toggleExportMenu()"]');
+    if (!menu || !button) return;
+
+    const isHidden = menu.classList.contains("hidden");
+    if (isHidden) {
+      // Move the menu to the document body so no dashboard section
+      // can clip or cover it. It always floats above the whole page.
+      if (menu.parentElement !== document.body) document.body.appendChild(menu);
+
+      const rect = button.getBoundingClientRect();
+      const menuWidth = 208;
+      const left = Math.min(
+        Math.max(8, rect.right - menuWidth),
+        window.innerWidth - menuWidth - 8
+      );
+
+      // Prefer below the button, but open above it if there is not enough room.
+      const menuHeight = 96;
+      const below = rect.bottom + 8;
+      const top = below + menuHeight <= window.innerHeight
+        ? below
+        : Math.max(8, rect.top - menuHeight - 8);
+
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+      menu.classList.remove("hidden");
+    } else {
+      menu.classList.add("hidden");
+    }
+  }
+
+  window.addEventListener("resize", function() {
+    const menu = document.getElementById("exportMenu");
+    if (menu && !menu.classList.contains("hidden")) toggleExportMenu();
+  });
+
+  window.addEventListener("scroll", function() {
+    const menu = document.getElementById("exportMenu");
+    if (menu && !menu.classList.contains("hidden")) {
+      menu.classList.add("hidden");
+    }
+  });
+
+  document.addEventListener("click", function(e) {
+    const menu = document.getElementById("exportMenu");
+    const button = e.target.closest("button[onclick=\"toggleExportMenu()\"]");
+    if (!menu || button) return;
+    if (!menu.parentElement.contains(e.target)) menu.classList.add("hidden");
+  });
+
+  function setStatus(message, type) {
+    const el = document.getElementById("parseStatus");
+
+    el.textContent = message;
+
+    if (type === "error") {
+      el.className = "text-xs text-red-600 font-semibold";
+    } else if (type === "success") {
+      el.className = "text-xs text-emerald-600 font-semibold";
+    } else {
+      el.className = "text-xs text-slate-400";
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem(
+      "expensePulseTransactions",
+      JSON.stringify(transactions)
+    );
+  }
+
+  function clearAllData() {
+    if (!transactions.length) return;
+
+    const confirmed = confirm(
+      "Clear all locally stored ExpensePulse transactions?"
+    );
+
+    if (!confirmed) return;
+
+    transactions = [];
+    localStorage.removeItem("expensePulseTransactions");
+    renderDashboard();
+    setStatus("All local transaction data has been cleared.", "success");
+  }
+
+  // Close export menu when clicking elsewhere
+  document.addEventListener("click", function(event) {
+    const menu = document.getElementById("exportMenu");
+    const button = event.target.closest("button");
+
+    if (!menu.contains(event.target) &&
+        !(button && button.textContent.includes("Export"))) {
+      menu.classList.add("hidden");
+    }
+  });
+
+  // ---------------------------------------------------------
+  // INITIALIZE
+  // ---------------------------------------------------------
+  lucide.createIcons();
+  initializeBudgetSettings();
+  renderDashboard();
+</script>
+
+
+<script>
+(function(){
+  function startMotion(){
+    const loader=document.getElementById('pageLoader');
+    if(loader) setTimeout(()=>loader.classList.add('done'),500);
+    document.querySelectorAll('section, .bg-white, .chart-wrap, table, header').forEach((el,i)=>{
+      el.classList.add('reveal-motion','stagger-'+((i%4)+1));
+    });
+    const io=new IntersectionObserver(entries=>entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); }
+    }),{threshold:.08});
+    document.querySelectorAll('.reveal-motion').forEach(el=>io.observe(el));
+    document.querySelectorAll('.bg-white').forEach(el=>el.classList.add('motion-card'));
+    document.querySelectorAll('button').forEach(b=>b.classList.add('btn-modern'));
+    document.querySelectorAll('h1,h2').forEach(el=>el.classList.add('gradient-text'));
+    document.querySelectorAll('section').forEach(el=>el.classList.remove('neon-border'));
+    if(window.matchMedia('(pointer:fine)').matches){
+      document.querySelectorAll('.motion-card').forEach(card=>{
+        card.addEventListener('pointermove',e=>{
+          const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+          card.style.transform='perspective(1000px) rotateX('+((r.height/2-y)/r.height*3).toFixed(2)+'deg) rotateY('+((x-r.width/2)/r.width*3).toFixed(2)+'deg) translateY(-7px) scale(1.012)';
+        });
+        card.addEventListener('pointerleave',()=>card.style.transform='');
+      });
+      const glow=document.createElement('div');
+      glow.style.cssText='position:fixed;width:260px;height:260px;border-radius:50%;pointer-events:none;z-index:2;background:radial-gradient(circle,rgba(99,102,241,.14),transparent 68%);transform:translate(-50%,-50%);transition:left .12s ease,top .12s ease;';
+      document.body.appendChild(glow);
+      document.addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';},{passive:true});
+    }
+    document.addEventListener('click',e=>{
+      const btn=e.target.closest('.btn-modern'); if(!btn)return;
+      const r=btn.getBoundingClientRect(),q=document.createElement('span');
+      q.style.cssText='position:absolute;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.7);left:'+(e.clientX-r.left-6)+'px;top:'+(e.clientY-r.top-6)+'px;transform:scale(0);pointer-events:none;transition:transform .65s ease,opacity .65s ease;';
+      btn.appendChild(q); requestAnimationFrame(()=>{q.style.transform='scale(30)';q.style.opacity='0';}); setTimeout(()=>q.remove(),700);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startMotion); else startMotion();
+})();
+</script>
+</body>
+</html>
