@@ -221,7 +221,7 @@
             <i data-lucide="piggy-bank" class="w-4 h-4"></i>
           </span>
         </div>
-        <p id="budgetLeft" class="text-2xl sm:text-3xl font-extrabold">₹5,000</p>
+        <p id="budgetLeft" class="text-2xl sm:text-3xl font-extrabold">₹0</p>
         <p id="budgetStatus" class="text-[11px] text-slate-400 mt-1">Remaining from your budget</p>
       </div>
 
@@ -379,7 +379,7 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
         <div class="flex items-center justify-between mb-5">
           <div>
             <h2 class="font-extrabold">Monthly Budget</h2>
-            <p id="budgetLimitLabel" class="text-xs text-slate-400 mt-1">Budget limit: ₹5,000</p>
+            <p id="budgetLimitLabel" class="text-xs text-slate-400 mt-1">Budget limit: ₹0</p>
           </div>
           <span id="budgetBadge" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700">
             0% Used
@@ -399,7 +399,8 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
                 type="number"
                 min="1"
                 step="1"
-                value="5000"
+                value="0"
+                placeholder="Enter your monthly budget"
                 class="w-full rounded-xl bg-slate-50 pl-8 pr-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>
@@ -436,9 +437,9 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
           <p class="text-[10px] uppercase tracking-wide font-extrabold text-indigo-600">
             Money Remaining
           </p>
-          <p id="budgetRemainingLarge" class="text-3xl font-extrabold text-slate-900 mt-1">₹5,000</p>
+          <p id="budgetRemainingLarge" class="text-3xl font-extrabold text-slate-900 mt-1">₹0</p>
           <p id="budgetRemainingMessage" class="text-xs text-indigo-700 mt-1">
-            You can spend up to ₹5,000 more this month.
+            Set your monthly budget to see how much you can spend.
           </p>
         </div>
 
@@ -447,7 +448,7 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
             <p id="budgetSpent" class="text-2xl font-extrabold">₹0</p>
             <p class="text-xs text-slate-400">spent</p>
           </div>
-          <p id="budgetLimitSmall" class="text-xs font-semibold text-slate-500">₹5,000 limit</p>
+          <p id="budgetLimitSmall" class="text-xs font-semibold text-slate-500">₹0 limit</p>
         </div>
 
         <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -457,11 +458,11 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
         <div class="mt-4 grid grid-cols-2 gap-2">
           <div class="p-3 rounded-xl bg-slate-50">
             <p class="text-[10px] text-slate-400 font-bold">80% Alert</p>
-            <p id="budgetAlertAmount" class="text-sm font-extrabold">₹4,000</p>
+            <p id="budgetAlertAmount" class="text-sm font-extrabold">₹0</p>
           </div>
           <div class="p-3 rounded-xl bg-slate-50">
             <p class="text-[10px] text-slate-400 font-bold">100% Limit</p>
-            <p id="budgetLimitCard" class="text-sm font-extrabold">₹5,000</p>
+            <p id="budgetLimitCard" class="text-sm font-extrabold">₹0</p>
           </div>
         </div>
       </div>
@@ -579,7 +580,7 @@ INR 500 credited to A/c XX1234 from salary@upi on 28-09-2026."
   // ---------------------------------------------------------
   // DATA
   // ---------------------------------------------------------
-  const DEFAULT_BUDGET_LIMIT = 5000;
+  const DEFAULT_BUDGET_LIMIT = 0;
   let budgetLimit = Number(localStorage.getItem("expensePulseBudget") || DEFAULT_BUDGET_LIMIT);
   if (!Number.isFinite(budgetLimit) || budgetLimit <= 0) {
     budgetLimit = DEFAULT_BUDGET_LIMIT;
