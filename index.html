@@ -42,13 +42,359 @@
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #f8fafc; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    /* =========================================================
+       RESPONSIVE DESIGN — phones, tablets, laptops & desktops
+       ========================================================= */
+
+    html {
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    /* Prevent long text/content from forcing horizontal scrolling */
+    img, svg, video, canvas {
+      max-width: 100%;
+    }
+
+    button, input {
+      max-width: 100%;
+    }
+
+    /* Mobile navigation */
+    @media (max-width: 767px) {
+      nav > div {
+        min-height: 68px;
+        height: auto;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        gap: 0.75rem;
+      }
+
+      nav .group > div {
+        flex-shrink: 0;
+      }
+
+      nav .group span {
+        font-size: 0.92rem;
+        line-height: 1.1;
+      }
+
+      nav > div > button {
+        padding: 0.55rem 0.8rem !important;
+        border-radius: 0.75rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+
+      nav > div > button svg {
+        width: 0.9rem;
+        height: 0.9rem;
+      }
+
+      /* Hero */
+      section.relative.z-10.max-w-5xl {
+        padding-top: 3rem !important;
+        padding-bottom: 3.5rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+
+      section.relative.z-10.max-w-5xl h1 {
+        font-size: clamp(2rem, 9vw, 3rem) !important;
+        line-height: 1.08 !important;
+        letter-spacing: -0.035em;
+        margin-bottom: 1rem !important;
+      }
+
+      section.relative.z-10.max-w-5xl h1 br {
+        display: none;
+      }
+
+      section.relative.z-10.max-w-5xl > p {
+        font-size: 0.94rem !important;
+        line-height: 1.65 !important;
+        margin-bottom: 1.5rem !important;
+      }
+
+      /* Badge */
+      section.relative.z-10.max-w-5xl > div:first-child {
+        max-width: 100%;
+        text-align: center;
+        line-height: 1.35;
+        padding: 0.45rem 0.75rem;
+        margin-bottom: 1.5rem !important;
+      }
+
+      /* Hero CTA */
+      section.relative.z-10.max-w-5xl .flex.flex-col.sm\:flex-row {
+        gap: 0.65rem !important;
+      }
+
+      section.relative.z-10.max-w-5xl .flex.flex-col.sm\:flex-row > * {
+        width: 100%;
+      }
+
+      /* App preview */
+      #demo {
+        margin-top: 3.5rem !important;
+        padding: 0.35rem !important;
+        border-radius: 1.25rem !important;
+      }
+
+      #demo > div:nth-child(2) {
+        padding: 0.75rem !important;
+        border-radius: 1rem !important;
+      }
+
+      /* Floating notification */
+      #demo > div:first-child {
+        width: calc(100% - 1rem) !important;
+        max-width: 22rem;
+        top: -1.1rem !important;
+        padding: 0.55rem 0.7rem !important;
+        border-radius: 0.9rem !important;
+      }
+
+      #demo > div:first-child p {
+        overflow-wrap: anywhere;
+      }
+
+      /* Preview header */
+      #demo h3 {
+        font-size: 0.95rem !important;
+      }
+
+      #demo .border-b {
+        margin-bottom: 1rem !important;
+      }
+
+      /* Tabs: horizontal scrolling instead of squeezing */
+      #demo .flex.items-center.gap-1\.5 {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0.25rem !important;
+      }
+
+      #demo .flex.items-center.gap-1\.5::-webkit-scrollbar {
+        display: none;
+      }
+
+      #demo .flex.items-center.gap-1\.5 button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        font-size: 0.68rem;
+        padding: 0.45rem 0.65rem !important;
+      }
+
+      /* Transaction rows */
+      #view-transactions > div {
+        padding: 0.75rem !important;
+        gap: 0.65rem;
+        align-items: flex-start;
+      }
+
+      #view-transactions > div > div:first-child {
+        min-width: 0;
+      }
+
+      #view-transactions > div > div:first-child > div:last-child {
+        min-width: 0;
+      }
+
+      #view-transactions p,
+      #view-transactions span {
+        overflow-wrap: anywhere;
+      }
+
+      #view-transactions > div > div:last-child {
+        flex-shrink: 0;
+      }
+
+      #view-transactions > div > div:last-child p:first-child {
+        font-size: 0.78rem !important;
+      }
+
+      /* How it works */
+      section#how-it-works {
+        padding: 3.5rem 1rem !important;
+      }
+
+      section#how-it-works > div:first-child {
+        margin-bottom: 2rem !important;
+      }
+
+      section#how-it-works h2 {
+        font-size: 1.75rem !important;
+        line-height: 1.15;
+      }
+
+      section#how-it-works .grid > div {
+        padding: 1.25rem !important;
+        border-radius: 1.25rem !important;
+      }
+
+      /* Privacy */
+      section#privacy {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        margin-bottom: 3rem !important;
+      }
+
+      section#privacy > div {
+        padding: 1.25rem !important;
+        gap: 1.25rem !important;
+        border-radius: 1.25rem !important;
+        align-items: stretch !important;
+      }
+
+      section#privacy > div > div:first-child {
+        gap: 0.85rem;
+      }
+
+      section#privacy h3 {
+        font-size: 1rem !important;
+        line-height: 1.35;
+      }
+
+      section#privacy p {
+        font-size: 0.78rem !important;
+      }
+
+      section#privacy button {
+        width: 100%;
+      }
+
+      /* Modal */
+      #authModal {
+        padding: 0.75rem !important;
+        align-items: center;
+      }
+
+      #authModal > div {
+        width: 100%;
+        max-width: 100%;
+        max-height: calc(100dvh - 1.5rem);
+        overflow-y: auto;
+        padding: 1.25rem !important;
+        border-radius: 1.25rem !important;
+      }
+
+      #authModal h3 {
+        font-size: 1.1rem !important;
+      }
+
+      #authModal input {
+        font-size: 16px !important; /* prevents iOS zoom */
+      }
+
+      /* Footer */
+      footer {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+
+      footer p {
+        line-height: 1.6;
+      }
+
+      /* Decorative glows should not create a visual overflow */
+      body > div.absolute {
+        max-width: 100vw;
+        pointer-events: none;
+      }
+    }
+
+    /* Small phones */
+    @media (max-width: 380px) {
+      nav > div {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+
+      nav .group span {
+        font-size: 0.78rem;
+      }
+
+      nav .group > div {
+        width: 2.25rem;
+        height: 2.25rem;
+      }
+
+      nav > div > button span {
+        display: none;
+      }
+
+      nav > div > button {
+        padding: 0.65rem !important;
+      }
+
+      section.relative.z-10.max-w-5xl h1 {
+        font-size: 1.9rem !important;
+      }
+
+      #view-transactions > div > div:last-child p:nth-child(2) {
+        display: none;
+      }
+    }
+
+    /* Tablet-specific improvements */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      nav > div,
+      section#how-it-works {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+      }
+
+      #demo {
+        max-width: 95vw;
+      }
+
+      section#privacy {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+      }
+    }
+
+    /* Large desktop */
+    @media (min-width: 1440px) {
+      section.relative.z-10.max-w-5xl {
+        max-width: 1100px;
+      }
+
+      #demo {
+        max-width: 960px;
+      }
+    }
+
+    /* Respect reduced-motion accessibility preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
   </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-500 selection:text-white relative overflow-x-hidden min-h-screen">
 
   <!-- Soft Ambient Glow Backgrounds -->
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-200/40 via-purple-100/50 to-blue-200/30 blur-[120px] pointer-events-none rounded-full animate-glow-subtle"></div>
-  <div class="absolute top-[650px] right-0 w-[450px] h-[450px] bg-emerald-100/50 blur-[130px] pointer-events-none rounded-full"></div>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[min(1000px,100vw)] h-[500px] bg-gradient-to-tr from-indigo-200/40 via-purple-100/50 to-blue-200/30 blur-[120px] pointer-events-none rounded-full animate-glow-subtle"></div>
+  <div class="absolute top-[650px] right-0 w-[min(450px,100vw)] h-[450px] bg-emerald-100/50 blur-[130px] pointer-events-none rounded-full"></div>
 
   <!-- Navigation Bar -->
   <nav class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 border-b border-slate-200/80 transition-all">
@@ -141,7 +487,7 @@
           </div>
 
           <!-- Interactive Tab Buttons -->
-          <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/60 text-xs font-bold text-slate-600">
+          <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/60 text-xs font-bold text-slate-600 max-w-full overflow-x-auto">
             <button onclick="switchTab('transactions')" id="tab-transactions" class="px-3 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition-all duration-200">
               Recent Spends
             </button>
@@ -165,7 +511,7 @@
                 <i data-lucide="utensils" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-sm font-bold text-slate-900">Swiggy Order</p>
+                <p class="text-sm font-bold text-slate-900 break-words">Swiggy Order</p>
                 <span class="inline-block text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 mt-0.5">
                   Food & Dining
                 </span>
@@ -173,7 +519,7 @@
             </div>
             <div class="text-right">
               <p class="text-sm font-extrabold text-slate-900">-₹240.00</p>
-              <p class="text-[11px] text-slate-400">Today, 2:15 PM</p>
+              <p class="text-[11px] text-slate-400 break-words">Today, 2:15 PM</p>
             </div>
           </div>
 
@@ -184,7 +530,7 @@
                 <i data-lucide="car" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-sm font-bold text-slate-900">Uber Auto Ride</p>
+                <p class="text-sm font-bold text-slate-900 break-words">Uber Auto Ride</p>
                 <span class="inline-block text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 mt-0.5">
                   Travel & Commute
                 </span>
@@ -192,7 +538,7 @@
             </div>
             <div class="text-right">
               <p class="text-sm font-extrabold text-slate-900">-₹120.00</p>
-              <p class="text-[11px] text-slate-400">Yesterday</p>
+              <p class="text-[11px] text-slate-400 break-words">Yesterday</p>
             </div>
           </div>
 
@@ -203,7 +549,7 @@
                 <i data-lucide="smartphone" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-sm font-bold text-slate-900">Mobile Recharge (Jio)</p>
+                <p class="text-sm font-bold text-slate-900 break-words">Mobile Recharge (Jio)</p>
                 <span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 mt-0.5">
                   Bills & Utilities
                 </span>
@@ -211,7 +557,7 @@
             </div>
             <div class="text-right">
               <p class="text-sm font-extrabold text-slate-900">-₹299.00</p>
-              <p class="text-[11px] text-slate-400">Oct 12</p>
+              <p class="text-[11px] text-slate-400 break-words">Oct 12</p>
             </div>
           </div>
 
